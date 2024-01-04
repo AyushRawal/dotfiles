@@ -1,0 +1,4 @@
+#!/bin/sh
+polybar &
+# sleep 1
+# polybar-msg cmd hide

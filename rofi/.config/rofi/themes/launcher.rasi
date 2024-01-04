@@ -1,0 +1,23 @@
+configuration {
+    modi:                       "drun,run,filebrowser,window";
+    show-icons:                 true;
+    display-drun:               "";
+    display-run:                "";
+    display-filebrowser:        "";
+    display-window:             "";
+    drun-display-format:        "{name}";
+    window-format:              "{w} · {c} · {t}";
+}
+
+@import "config.rasi"
+window {
+        width: 700px;
+}
+
+inputbar {
+    children:                    [ "textbox-prompt-colon", "entry", "mode-switcher" ];
+}
+
+textbox-prompt-colon {
+    str:                         "";
+}

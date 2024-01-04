@@ -1,0 +1,8 @@
+#!/bin/sh
+
+Cover=/tmp/cover.png
+bkpCover=~/.config/eww/bkpcover.png
+
+albumart="$(playerctl metadata mpris:artUrl)"
+[ $(playerctl metadata mpris:artUrl) ] && curl -s "$albumart" --output $Cover || cp $bkpCover $Cover 
+echo "$Cover"

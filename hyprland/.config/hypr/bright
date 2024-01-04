@@ -1,0 +1,13 @@
+#!/bin/bash
+
+case "$1" in
+  "raise")
+    swayosd-client --brightness +2 || brightnessctl s +2%
+    ;;
+  "lower")
+    swayosd-client --brightness -2 || brightnessctl s 2%-
+    ;;
+  "*")
+    echo "inavlid usage"
+    ;;
+esac

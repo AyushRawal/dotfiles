@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# A simple bash script to compile and execute cpp files during contests
+
+usage="[USAGE]: runcpp [file]		-- compile and execute file with input from input.txt
+   [OR]: runcpp clean		-- delete input.txt and a.out if they exist
+   [OR]: runcpp -h | --help	-- print this help mesaage and exit"
+
+if [ ! $# -eq 1 ]; then
+	echo "Invalid usage! \n"
+	echo "$usage"
+	exit
+fi
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+	echo "$usage"
+	exit
+fi
+
+if [ "$1" = "clean" ]; then
+	if [ -e a.out ]; then
+		rm a.out
+	fi
+	if [ -e input.txt ]; then
+		rm input.txt
+	fi
+else
+	if [ ! -e $1 ]; then
+		echo "[ERROR] $1 not found."
+		exit
+	fi
+	if [ ! -e input.txt ]; then
+		echo "[ERROR] input.txt not found."
+		exit
+	fi
+	g++ $1
+	cat input.txt | ./a.out
+fi

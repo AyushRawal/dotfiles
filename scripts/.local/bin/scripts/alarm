@@ -1,0 +1,7 @@
+#!/bin/sh
+ring='mpv --loop ~/.local/bin/scripts/assets/alarm_clock_1.mp3 &
+mpv_pid=$!
+notify-send --wait "Alarm !!" "Click to stop"
+kill $mpv_pid'
+
+echo "$ring" | at "$@" > /dev/null 2>&1

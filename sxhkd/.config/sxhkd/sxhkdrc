@@ -1,0 +1,35 @@
+XF86MonBrightnessUp
+	brightnessctl -q set +5% && notify-send -h int:value:$(brightnessctl get) -t 2000 Brightness
+XF86MonBrightnessDown
+	brightnessctl -q set 5%- && notify-send -h int:value:$(brightnessctl get) -t 2000 Brightness
+XF86AudioRaiseVolume
+    pactl set-sink-volume @DEFAULT_SINK@ +5% && notify-send -h int:value:$(pactl get-sink-volume @DEFAULT_SINK@ | grep '[0-9]*%' -o | head -n 1 | tr -d '%') Volume
+XF86AudioLowerVolume
+    pactl set-sink-volume @DEFAULT_SINK@ -5% && notify-send -h int:value:$(pactl get-sink-volume @DEFAULT_SINK@ | grep '[0-9]*%' -o | head -n 1 | tr -d '%') Volume
+XF86AudioMute
+    pactl set-sink-mute @DEFAULT_SINK@ toggle && notify-send 'Volume' "$(pactl get-sink-mute @DEFAULT_SINK@)"
+
+Print
+    scrshot full
+super + Print
+    scrshot selection
+super + shift + Print
+    scrshot window
+
+super + Escape
+    powermenu
+super + slash
+    rofimoji
+super + ctrl + r
+    reload
+
+#~Super_L
+#    launcher
+# super + a
+#     polybar-msg cmd toggle
+super + Return
+	alacritty
+super + space
+	launcher
+super + b; {b,a}
+	{firefox -profile ~/.mozilla/firefox/z78baxmg.default, firefox -profile ~/.mozilla/firefox/9u87avp6.apps}

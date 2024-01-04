@@ -1,0 +1,15 @@
+#!/bin/bash
+
+case "$1" in
+  "raise")
+    swayosd-client --output-volume +2 --max-volume 120 || pactl set-sink-volume @DEFAULT_SINK@ +2%
+    ;;
+  "lower")
+    swayosd-client --output-volume -2 --max-volume 120 || pactl set-sink-volume @DEFAULT_SINK@ -2%
+    ;;
+  "mute")
+    swayosd-client --output-volume mute-toggle || pactl set-sink-mute @DEFAULT_SINK@ toggle
+    ;;
+  "*")
+    echo "invalid usage"
+esac

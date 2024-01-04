@@ -1,0 +1,19 @@
+theme = "gruvbox_dark_hard"
+
+[editor]
+line-number = "relative"
+cursorline = true
+color-modes = true
+auto-format = false
+bufferline = "always"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+
+[editor.indent-guides]
+render = true

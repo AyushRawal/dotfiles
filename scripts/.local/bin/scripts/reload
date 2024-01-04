@@ -1,0 +1,58 @@
+#!/bin/sh
+
+reload_qtile() {
+    qtile cmd-obj -o cmd -f reload_config
+}
+
+reload_sxhkd() {
+    pkill -usr1 -x sxhkd
+}
+
+reload_polybar() {
+    polybar-msg cmd restart
+}
+
+reload_monitor() {
+    autorandr --change
+    sleep 1
+    setwall
+}
+
+reload_dunst() {
+    pkill dunst
+    sleep 1
+    setsid dunst &
+}
+
+if [ $# -eq 0 ]; then
+    # reload_sxhkd
+    reload_qtile
+    reload_polybar
+    reload_monitor
+else
+    for var in "$@"
+    do
+        case $var in
+        "qtile")
+            reload_qtile
+            ;;
+        "sxhkd")
+            reload_sxhkd
+            ;;
+        "polybar")
+            reload_polybar
+            ;;
+        "monitor")
+            reload_monitor
+            ;;
+        "dunst")
+            reload_dunst
+            ;;
+        *)
+            echo "Invalid argument: $var"
+            ;;
+        esac
+    done
+fi
+
+

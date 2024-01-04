@@ -1,0 +1,5 @@
+#!/bin/sh
+file1=~/Pictures/Wallpapers/Universal/home-sweet-home.jpg
+file2=~/Pictures/Wallpapers/Universal/home-sweet-home.jpg
+sleep 1
+xwallpaper --output eDP-1 --zoom $file1 --output HDMI-1 --zoom $file2

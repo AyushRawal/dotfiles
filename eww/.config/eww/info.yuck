@@ -1,0 +1,117 @@
+(defwidget metric [title text]
+           (box (label :xalign "0" :text title)
+                (label :xalign "1" :text text)
+                ))
+
+;; Weather Widget ;;
+(defwidget wttr []
+  (box :class "weather"
+       :orientation "v"
+       :space-evenly false
+       (box :spacing 5
+            :space-evenly false
+            (label :class "weather-icon" :text "${icon} ")
+            (box :orientation "v"
+                 :space-evenly false
+                 (label :text "Feels like")
+                 (label :class "header" :text "${weather.current_condition[0].FeelsLikeC}°C ")
+                 (label :class "cond" :text "${weather.current_condition[0].weatherDesc[0].value}")
+                 )
+            )
+       (metric :title "Current:" :text "${weather.current_condition[0].temp_C}°C")
+       (metric :title "Average:" :text "${weather.weather[0].avgtempC}°C")
+       (metric :title "Minimum:" :text "${weather.weather[0].mintempC}°C")
+       (metric :title "Maximum:" :text "${weather.weather[0].maxtempC}°C")
+       (metric :title "Humidity:" :text "${weather.current_condition[0].humidity}%")
+       (metric :title "Precipitation:" :text "${weather.current_condition[0].precipMM} mm")
+       (metric :title "Visibility:" :text "${weather.current_condition[0].visibility} km")
+       (metric :title "UV Index:" :text "${weather.current_condition[0].uvIndex}")
+       (metric :title "Wind:" :text "${weather.current_condition[0].windspeedKmph} km/h ${weather.current_condition[0].winddir16Point}")
+       ))
+(defpoll weather :interval "7200s" 'curl -s "wttr.in/$(<$HOME/.local/share/location)?format=j2" > ~/.cache/eww/weather.json && cat ~/.cache/eww/weather.json')
+(defpoll icon :interval "7200s" "sleep 1; ~/.config/eww/weathericon")
+
+(defwidget sysinfo []
+  (box :orientation "v"
+       :space-evenly false
+       :class "sysinfo"
+       :spacing 10
+       (box (box :space-evenly false
+                 :orientation "v"
+                 :class "metric"
+                 (label :text "CPU")
+                 (circular-progress :value {EWW_CPU.avg}
+                                    :thickness 12
+                                    :class "meter"
+                                    (label :class "radial-label"
+                                           :show-truncated false
+                                           :wrap false
+                                           :text "${EWW_TEMPS.CORETEMP_PACKAGE_ID_0}°C")))
+            (box :space-evenly false
+                 :orientation "v"
+                 :class "metric"
+                 (label :text "RAM")
+                 (circular-progress :value {EWW_RAM.used_mem_perc}
+                                    :thickness 12
+                                    :class "meter"
+                                    (label :class "radial-label"
+                                           :text "${round(EWW_RAM.used_mem / (1024 * 1024 * 1024), 1)}G")
+                                    )))
+       (box (box :space-evenly false
+                 :orientation "v"
+                 :class "metric"
+                 (label :text "SWAP")
+                 (circular-progress :value {(EWW_RAM.total_swap -  EWW_RAM.free_swap) / EWW_RAM.total_swap * 100}
+                                    :thickness 12
+                                    :class "meter"
+                                    (label :class "radial-label"
+                                           :show-truncated false
+                                           :wrap false
+                                           :text "${round((EWW_RAM.total_swap - EWW_RAM.free_swap) / (1024 * 1024 * 1024), 1)}G")))
+            (box :space-evenly false
+                 :orientation "v"
+                 :class "metric"
+                 (label :text "NET")
+                 (box :orientation "v"
+                      :style "padding-top: 1.5em"
+                      (label :text "${round(EWW_NET.wlp0s20f3.NET_DOWN / 1024, 2)} KiB/s ")
+                      (label :text "${round(EWW_NET.wlp0s20f3.NET_UP / 1024, 2)} KiB/s ")
+                      )))
+       ))
+
+(defwidget stats []
+  (box :orientation "h"
+       :space-evenly true
+       :spacing 8
+       :class "sysinfo"
+       (box :orientation "v"
+            :space-evenly true
+            (label :halign "start" :text "CPU")
+            (label :halign "start" :text "RAM")
+            (label :halign "start" :text "SWAP")
+            (label :halign "start" :text "NET"))
+       (box :orientation "v"
+            :space-evenly true
+            (label :halign "end" :text "${round(EWW_CPU.avg,2)} %")
+            (label :halign "end" :text "${round(EWW_RAM.used_mem / (1024 * 1024 * 1024), 1)} G")
+            (label :halign "end" :text "${round((EWW_RAM.total_swap - EWW_RAM.free_swap) / (1024 * 1024 * 1024), 1)} G")
+            (label :halign "end" :text "${round(EWW_NET.wlp0s20f3.NET_DOWN / 1024, 2)} "))
+       (box :orientation "v"
+            :space-evenly true
+            (label :halign "end" :text "${EWW_TEMPS.CORETEMP_PACKAGE_ID_0}°C")
+            (label :halign "end" :text "/ ${round(EWW_RAM.total_mem / (1024 * 1024 * 1024), 1)} G")
+            (label :halign "end" :text "/ ${round(EWW_RAM.total_swap / (1024 * 1024 * 1024), 1)} G")
+            (label :halign "end" :text "${round(EWW_NET.wlp0s20f3.NET_UP / 1024, 2)} "))
+       )
+  )
+
+(defwidget info []
+  (box :orientation "v"
+       :space-evenly false
+       ;; (wttr)
+       ;; (sysinfo)
+       (stats)
+       )
+  )
+
+;; vim: set ft=lisp:

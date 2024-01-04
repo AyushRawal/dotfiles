@@ -1,0 +1,11 @@
+/* Copyright (C) 2020-2022 Aditya Shakya <adi1090x@gmail.com> */
+/* Everyone is permitted to copy and distribute copies of this file under GNU-GPL3 */
+
+* {
+    background: #1D2021FF;
+    background-alt: #32302FFF;
+    foreground: #DDC7A1FF;
+    selected: #7DAEA3FF;
+    active: #D8A657FF;
+    urgent: #EA6962FF;
+}

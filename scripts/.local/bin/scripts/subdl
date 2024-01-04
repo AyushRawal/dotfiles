@@ -1,0 +1,77 @@
+#!/usr/bin/python3
+from xmlrpc.client import ServerProxy, Transport
+import os
+import zlib
+import base64
+
+username = 'gakkiheydi@vusra.com'
+password = 'A$dfghjk1'
+
+language = 'en'
+user_agent = os.getenv('OS_USER_AGENT') or 'TemporaryUserAgent'
+url = 'http://api.opensubtitles.org/xml-rpc'
+
+transport = Transport()
+transport.user_agent = user_agent
+
+xmlrpc = ServerProxy(url, allow_none=True, transport=transport)
+
+try:
+    data = xmlrpc.LogIn(username, password, language, user_agent)
+except:
+    print("\ncheck your internet connection")
+    exit()
+
+if (data.get('status').split()[0] == '200'):
+    token = data.get('token')
+else:
+    print("\ncan't establish connection")
+    exit()
+
+query = input("Enter movie name : ")
+name = input("Enter file name : ")
+
+try:
+    data = xmlrpc.SearchSubtitles(token, [{'sublanguageid': 'eng', 'query': query}])
+except:
+    print("Something went wrong")
+    exit()
+
+if (data.get('status').split()[0] == '200'):
+    subtitles = data.get('data')
+else:
+    print("Something went wrong")
+    exit()
+
+print('\n')
+for i,subtitle in enumerate(subtitles):
+    print(i, subtitle.get('SubFileName'), subtitle.get('SubRating'))
+
+choice = int(input("\n❯ "))
+print("")
+
+id_subtitle_file = subtitles[choice].get('IDSubtitleFile')
+
+try:
+    data = xmlrpc.DownloadSubtitles(token, [id_subtitle_file])
+except:
+    print("Something went wrong")
+    exit()
+
+if (data.get('status').split()[0] == '200'):
+    encoded_data = data.get('data')
+else:
+    print("Something went wrong")
+    exit()
+
+for item in encoded_data:
+    raw_subtitle = zlib.decompress(base64.b64decode(item['data']), 16 + zlib.MAX_WBITS)
+    decoded_data = raw_subtitle.decode('utf-8', errors='ignore')
+    fname = name + ".srt"
+    try:
+        with open(fname, 'w', encoding='utf-8') as f:
+            f.write(decoded_data)
+    except:
+        print("can't write to file")
+
+print("Downloaded successfully")

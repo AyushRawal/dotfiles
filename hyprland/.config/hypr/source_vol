@@ -1,0 +1,15 @@
+#!/bin/bash
+
+case "$1" in
+  "raise")
+    swayosd-client --input-volume +2 || pactl set-source-volume @DEFAULT_SOURCE@ +2%
+    ;;
+  "lower")
+    swayosd-client --input-volume -2 || pactl set-source-volume @DEFAULT_SOURCE@ -2%
+    ;;
+  "mute")
+    swayosd-client --input-volume mute-toggle || pactl set-source-mute @DEFAULT_SOURCE@ toggle
+    ;;
+  "*")
+    echo "invalid usage"
+esac

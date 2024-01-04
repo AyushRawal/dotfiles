@@ -1,0 +1,5 @@
+#!/bin/sh
+
+dir="$HOME/.local/bin/scripts"
+
+rofi -modi "output:$dir/audio-sink.sh,input:$dir/audio-source.sh" -show output

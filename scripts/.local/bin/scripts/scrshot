@@ -1,0 +1,22 @@
+#!/bin/sh
+
+file=~/Pictures/Screenshots/$(date +%Y%m%d%H%M%S).png
+success=1
+
+case $1 in
+  "full")
+    maim ${@:2}| tee $file | xclip -sel clip -t image/png
+    ;;
+  "selection")
+    maim -s ${@:2}| tee $file | xclip -sel clip -t image/png
+    ;;
+  "window")
+    maim -i $(xdotool selectwindow) ${@:2}| tee $file | xclip -sel clip -t image/png
+    ;;
+  *)
+    echo "invalid usage"
+    success=0
+    ;;
+esac
+
+(($success == 1)) && notify-send "Screenshot saved to $file and copied to clipboard"

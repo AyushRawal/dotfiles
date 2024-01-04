@@ -1,0 +1,22 @@
+#!/bin/sh
+
+weather="$HOME/.cache/eww/weather.json"
+icons="$HOME/.config/eww/icons.json"
+
+sunset=$(jq ".weather[0].astronomy[0].sunset" "$weather" | tr -d '"')
+sunrise=$(jq ".weather[0].astronomy[0].sunrise" "$weather" | tr -d '"')
+sunset=$(date --date="$sunset" +%s)
+sunrise=$(date --date="$sunrise" +%s)
+now=$(date +%s)
+
+code=$(jq ".current_condition[0].weatherCode" "$weather")
+cond=$(jq ".codes.$code" "$icons")
+
+if [ "$now" -lt "$sunset" ] && [ "$now" -gt "$sunrise" ];
+then
+    icon=$(jq ".day.$cond" "$icons")
+else
+    icon=$(jq ".night.$cond" "$icons")
+fi
+echo "$icon" | tr -d '"'
+

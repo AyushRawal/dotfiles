@@ -1,0 +1,25 @@
+#!/bin/bash
+
+path="$HOME/.local/bin"
+mkdir -p $path
+
+case "$1" in
+  "vimv") # batch rename files
+    curl https://raw.githubusercontent.com/thameera/vimv/master/vimv > "$path/vimv" && chmod +x "$path/vimv"
+    ;;
+
+  "cht") # cheat.sh
+    curl https://cht.sh/:cht.sh > "$path/cht" && chmod +x "$path/cht"
+    ;;
+
+  "rtx") # asdf alternative for tool version management
+    curl https://rtx.pub/rtx-latest-linux-x64 > "$path/rtx" && chmod +x "$path/rtx"
+    ;;
+
+  "getnf") # get nerd fonts
+    curl -fsSL https://raw.githubusercontent.com/ronniedroid/getnf/master/getnf > "$path/getnf" && chmod +x "$path/getnf"
+    ;;
+  *)
+    echo "unknown tool"
+    ;;
+esac

@@ -1,0 +1,40 @@
+; includes:
+;widgets
+(include "calendar.yuck")
+(include "musicControl.yuck")
+(include "controlPanel.yuck")
+(include "info.yuck")
+
+(defwindow calendar
+           :monitor 0
+           :geometry (geometry :y "10px"
+                               :anchor "top center")
+           (cal)
+           )
+
+(defwindow controlPanel
+           :monitor 0
+           :geometry (geometry :x "10px"
+                               :y "10px"
+                               :anchor "top right")
+           (control)
+           )
+
+(defwindow musicControl
+           :monitor 0
+           :geometry (geometry :x "120px"
+                               :y "40px"
+                               :anchor "top center"
+                               )
+           (music)
+           )
+
+(defwindow info
+           :monitor 0
+           :geometry (geometry :x "100px"
+                               :y "10px"
+                               :anchor "top right")
+           (info)
+            )
+
+; vim: set ft=lisp:

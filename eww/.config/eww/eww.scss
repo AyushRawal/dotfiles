@@ -1,0 +1,163 @@
+$background: #1D2021;
+$background-alt: #32302f;
+$foreground: #eddbb2;
+$disabled: #504945;
+$red:     #ea6962;
+$green:   #a9b665;
+$yellow:  #d8a657;
+$blue:    #7daea3;
+$magenta: #d3869b;
+$cyan:    #89b482;
+
+* {
+  all: unset;
+  color: $foreground;
+  // font-family: JetBrainsMono Nerd Font;
+  font-family: Meslo LGS NF;
+}
+
+/* Calendar */
+
+.cal-box {
+  background-color: $background;
+  border-radius: 8px;
+  border: 2px solid;
+  font-family: JetBrainsMono Nerd Font;
+  font-size: 0.9em;
+
+  .cal-inner-box {
+    padding: 0.8rem 0.8rem .3rem 1rem;
+
+    .cal {
+      padding: .6rem .20rem 0.2rem 0.4rem;
+      margin-left: 10px;
+    }
+  }
+}
+
+calendar:selected {
+  color: $red;
+}
+
+calendar.header {
+  color: $yellow;
+  font-weight: bold;
+}
+
+calendar.button {
+  color: $green;
+}
+
+calendar.highlight {
+  color: $magenta;
+  font-weight: bold;
+}
+
+calendar:indeterminate {
+  color: $disabled;
+}
+
+.control-panel {
+  background-color: $background;
+  border-radius: 10px;
+  border: 2px solid $foreground;
+  font-size: 0.9em;
+  padding: 0 4px 4px 0px;
+}
+
+.icon {
+  font-size: 1.4em;
+}
+
+.slider {
+  padding: 4px 10px 4px 10px;
+  background-color: $background;
+  border-radius: 10px;
+}
+
+scale trough {
+  background-color: $background-alt;
+  border-radius: 5px;
+  margin: 0 0.3em 0 0.3em;
+  min-height: 15px;
+  min-width: 220px;
+}
+
+scale trough highlight {
+  background-color: $foreground;
+  border-radius: 5px;
+}
+
+
+.music-player{
+  background-color: $background;
+  border: 2px solid $foreground;
+}
+
+.controls {
+  margin-left: -22rem;
+  min-width: 15em;
+  label {
+    color: $foreground;
+  }
+}
+
+.album_art {
+  background-size: cover;
+  background-position: center;
+  padding: 11rem;
+  opacity: 0.30;
+}
+
+.artist {
+  font-style: italic;
+  font-size : 1.1em;
+}
+.song{
+  font-weight: bold;
+  font-size: 1.3em;
+}
+.btn_prev, .btn_next {
+  font-size : 2.8em;
+}
+.btn_play {
+  font-size : 3.8em;
+}
+
+.weather {
+  padding: 12px;
+  font-size: 0.9em;
+  background-color: $background;
+  border: 2px solid $foreground;
+}
+
+.cond {
+  font-size: 1.2em;
+}
+.header {
+  font-size: 2.2em;
+}
+.weather-icon {
+  font-size: 4em;
+}
+
+.sysinfo {
+  background-color: $background;
+  border: 2px solid $foreground;
+  padding: 4px;
+  font-size: 0.9em;
+}
+
+.meter {
+  padding: 7px;
+  margin: 5px;
+  background-color: $background-alt;
+}
+.radial-label {
+  font-size: 0.9em;
+  padding: 2.4em;
+}
+
+.metric {
+  padding: 10px;
+}

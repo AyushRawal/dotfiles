@@ -1,0 +1,34 @@
+;;  Music Widget
+(defwidget music []
+           (box :class "music-player"
+                :orientation "h"
+                :space-evenly "false"
+                (box :class "album_art" :style "background-image: url('${art}');")
+                (box :orientation "v"
+                     :valign "center"
+                     :space-evenly "false"
+                     :halign "center"
+                     :spacing 8
+                     :class "controls"
+                     (label :class "song"
+                            :limit-width 20
+                            :text title)
+                     (label :class "artist"
+                            :limit-width 25
+                            :text artist)
+                     (box :orientation "h"
+                          :space-evenly "false"
+                          :halign "center"
+                          :spacing 35
+                          (button :class "btn_prev" :onclick "playerctl previous" "ﭣ")
+                          (button :class "btn_play" :onclick "playerctl play-pause" {playerStatus=="Playing" ? "" : ""})
+                          (button :class "btn_next" :onclick "playerctl next" "ﭡ"))
+                     )
+                )
+           )
+(defpoll art :interval "5s" "~/.config/eww/albumart")
+(defpoll title :interval "2s" "playerctl metadata title")
+(defpoll artist :interval "2s" "playerctl metadata artist")
+(defpoll playerStatus :interval "0.5s" "playerctl status")
+
+; vim: set ft=lisp:

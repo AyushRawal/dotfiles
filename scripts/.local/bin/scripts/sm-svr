@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# Variables
+title="Media Player"
+index="index.html"
+# shopt -s nocasematch
+is_img () {
+    case "${1##*.}" in
+        "jpg"|"jpeg"|"png"|"gif"|"webp"|"tiff"|"bmp") return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+
+#Program
+mkdir html
+filecount=1
+count=1
+find * -type f -iname "*.mp4" -o -iname "*.mkv" -o -iname "*.webm" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" -o -iname "*.gif" | sort | while read file; do
+if ((filecount % 50 == 1)); then
+echo "<!DOCTYPE html>
+<html>
+<head>
+<title>$title</title>
+</head>
+<body>" > html/$count.html
+echo "creating $count.html"
+fi
+if is_img "$file"; then
+  echo "<a href=\"../$file\"><img src=\"../$file\" height=600 alt=$file></img></a>" >> html/$count.html
+else
+  echo "<a href=\"../$file\"><video height=600><source src=\"../$file\">$file</video></a>" >> html/$count.html
+fi
+filecount=$((filecount+1))
+if ((filecount % 50 == 0)); then
+  echo "<a href=\"$((count+1)).html\">Next ></a>
+</body>
+</html>" >> html/$count.html
+count=$((count+1))
+fi
+done
+
+mv html/1.html html/index.html

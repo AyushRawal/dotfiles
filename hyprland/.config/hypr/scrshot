@@ -1,0 +1,37 @@
+#!/bin/bash
+
+file=~/Pictures/Screenshots/$(date +%Y%m%d%H%M%S).png
+success=1
+
+# hyprland
+focusedOutput() {
+  hyprctl -j monitors | jq -r '.[] | select(.focused) | .name '
+}
+focuedWindow() {
+  hyprctl -j activewindow | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"'
+}
+
+# shellcheck disable=2068
+case $1 in
+  "full")
+    grim ${@:2} "$file" || success=0
+    ;;
+  "monitor")
+    grim -o "$(focusedOutput)" ${@:2} "$file" || success=0
+    ;;
+  "selection")
+    grim -g "$(slurp)" ${@:2} "$file" || success=0
+    ;;
+  "window")
+    grim -g "$(focuedWindow)" ${@:2} "$file" || success=0
+    ;;
+  *)
+    echo "invalid usage"
+    success=0
+    ;;
+esac
+
+if [[ $success == 1 ]]; then
+  notify-send "Screenshot saved to $file and copied to clipboard"
+  wl-copy "$file"
+fi

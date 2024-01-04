@@ -1,0 +1,63 @@
+;; Brightness Widgets ;;
+(defwidget bright []
+           (box :class "slider"
+                :spacing 4
+                :space-evenly false
+                (label :text " "
+                       :class "icon"
+                       )
+                (scale :onchange "brightnessctl set {}%"
+                       :value current-brightness
+                       :tooltip "Brightness: ${current-brightness}%"
+                       :max 101
+                       :min 0)
+                (label :text current-brightness)
+                (label :text "%")
+                ))
+(defpoll current-brightness :interval "0.1s" "brightnessctl get")
+
+;; Volume widget ;;
+(defwidget vol []
+           (box :class "slider"
+                :spacing 4
+                :space-evenly false
+                (button :class "icon" :onclick "pactl set-sink-mute @DEFAULT_SINK@ toggle" {volStatus=="yes" ? "婢 " : "墳 "})
+                (scale :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
+                       :value current-volume
+                       :tooltip "Volume: ${current-volume}%"
+                       :max 151
+                       :min 0)
+                (label :text current-volume)
+                (label :text "%")
+                ))
+(defpoll current-volume :interval "0.1s" "pactl get-sink-volume @DEFAULT_SINK@ | grep '[0-9]*%' -o | head -n 1 | tr -d '%'")
+(defpoll volStatus :interval "0.1s" "pactl get-sink-mute @DEFAULT_SINK@ | cut -d ' ' -f2")
+
+;; Mic widget ;;
+(defwidget mic []
+           (box :class "slider"
+                :spacing 4
+                :space-evenly false
+                (button :class "icon" :onclick "pactl set-source-mute @DEFAULT_SOURCE@ toggle" {micStatus=="yes" ? " " : " "})
+                (scale :onchange "pactl set-source-volume @DEFAULT_SOURCE@ {}%"
+                       :value current-mic-vol
+                       :tooltip "Volume: ${current-mic-vol}%"
+                       :max 101
+                       :min 0)
+                (label :text current-mic-vol)
+                (label :text "%")
+                ))
+(defpoll current-mic-vol :interval "0.1s" "pactl get-source-volume @DEFAULT_SOURCE@ | grep '[0-9]*%' -o | head -n 1 | tr -d '%'")
+(defpoll micStatus :interval "0.1s" "pactl get-source-mute @DEFAULT_SOURCE@ | cut -d ' ' -f2")
+
+;; Control panel ;;
+(defwidget control []
+          (box :orientation "v"
+               :class "control-panel"
+               :space-evenly false
+            (bright)
+            (vol)
+            (mic)
+            )
+           )
+; vim: set ft=lisp:
