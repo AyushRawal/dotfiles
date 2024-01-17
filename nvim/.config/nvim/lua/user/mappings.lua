@@ -56,22 +56,18 @@ M.main = function()
   map("n", "[l", "<CMD>lprev<CR>", { desc = "previous entry in loclist" })
   map("n", "<A-l>", "<CMD>lclose<CR>", { desc = "close location list" })
 
+  -- stylua: ignore start
   -- save me
   map("n", "<CR>", function()
-    if vim.o.modifiable then
-      vim.fn.feedkeys("ciw")
-    else
-      if vim.o.buftype == "help" then
-        -- follow tags in help windows
-        local key = vim.api.nvim_replace_termcodes("<C-]>", true, false, true)
-        vim.api.nvim_feedkeys(key, "n", false)
-      else
-        -- keep enter in other non-modifiable windows such as quickfix etc.
-        local key = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
-        vim.api.nvim_feedkeys(key, "n", false)
-      end
-    end
-  end, { desc = "ciw / follow help tags / default" })
+    -- change word under cursor normally
+    if vim.o.modifiable then return "ciw" end
+    -- follow tags in help windows
+    if vim.o.buftype == "help" then return "<C-]>" end
+    -- keep enter in other non-modifiable windows such as quickfix etc.
+    return "<CR>"
+  end, { desc = "ciw / follow help tags / default", expr = true })
+  -- stylua: ignore end
+
   map("n", "<leader>w", "<CMD>w<CR>", { desc = "save file" })
 
   -- terminal config
@@ -201,11 +197,11 @@ M.luasnip = function()
     end
   end)
 
-  -- map("i", "<C-l>", function ()
-  --   if luasnip.choice_active() then
-  --     luasnip.change_choice(1)
-  --   end
-  -- end)
+  map("i", "<C-;>", function ()
+    if luasnip.choice_active() then
+      luasnip.change_choice(1)
+    end
+  end)
 end
 
 M.lsp = function(bufnr)
@@ -230,7 +226,7 @@ M.lsp = function(bufnr)
     vim.print(vim.lsp.buf.list_workspace_folders())
   end, { desc = "list workspace folders" })
 
-  if not package.loaded("telescope") then
+  if not package.loaded["telescope"] then
     buf_map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
     buf_map("n", "gI", vim.lsp.buf.implementation, { desc = "go to implementation" })
     buf_map("n", "gy", vim.lsp.buf.type_definition, { desc = "go to type definition" })
@@ -394,6 +390,17 @@ M.comment = {
     ---Add comment at the end of line
     eol = "gcA",
   },
+}
+
+M.obsidian = {
+  { "<leader>nn", ":ObsidianNew ", desc = "new note" },
+  { "<leader>nf", "<CMD>ObsidianQuickSwitch<CR>", desc = "find note" },
+  { "<leader>ng", "<CMD>ObsidianSearch<CR>", desc = "search or create note" },
+  { "<leader>no", "<CMD>ObsidianOpen<CR>", desc = "open current note in Obsidian" },
+  { "<leader>nb", "<CMD>ObsidianBacklinks<CR>", desc = "get references to the current note" },
+  { "<leader>nd", "<CMD>ObsidianToday<CR>", desc = "today's note" },
+  { "<leader>nt", "<CMD>ObsidianTemplate<CR>", desc = "insert template" },
+  { "<leader>np", "<CMD>ObsidianPasteImg<CR>", desc = "paste image from clipboard at cursor position" },
 }
 
 return M

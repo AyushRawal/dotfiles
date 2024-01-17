@@ -12,6 +12,20 @@ return {
     opts = {},
   },
   { "nvim-tree/nvim-web-devicons", lazy = true },
+  {
+    "kosayoda/nvim-lightbulb",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      autocmd = {
+        enabled = true,
+      },
+      sign = { enabled = false },
+      virtual_text = {
+        enabled = true,
+        text = "  󱐋",
+      },
+    },
+  },
   -- {
   --   "lukas-reineke/indent-blankline.nvim",
   --   main = "ibl",
@@ -19,7 +33,7 @@ return {
   --   event = { "BufReadPost", "BufNewFile" },
   -- },
   {
-    'nvimdev/indentmini.nvim',
+    "nvimdev/indentmini.nvim",
     event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("indentmini").setup({
@@ -28,9 +42,26 @@ return {
           "lisp",
           "scheme",
           "markdown",
-        }
+          "help"
+        },
       })
-      vim.api.nvim_set_hl(0, "IndentLine", { link = "IblIndent" })
+      local function indent_set_hl()
+        local link = "Comment"
+        local ibl_hl = vim.api.nvim_get_hl(0, { name = "IblIndent" })
+        if not vim.tbl_isempty(ibl_hl) then
+          link = "IblIndent"
+        end
+        ibl_hl = vim.api.nvim_get_hl(0, { name = "IndentBlanklineChar" })
+        if not vim.tbl_isempty(ibl_hl) then
+          link = "IndentBlanklineChar"
+        end
+        vim.api.nvim_set_hl(0, "IndentLine", { link = link })
+      end
+      indent_set_hl()
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        callback = indent_set_hl,
+        group = vim.api.nvim_create_augroup("user_indentline_hl", { clear = true }),
+      })
     end,
   },
   { "j-hui/fidget.nvim", opts = {}, event = { "LspAttach" } },
@@ -81,7 +112,6 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("lint").linters_by_ft = {
-        python = { "flake8" },
         sh = { "shellcheck" },
       }
       vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave", "BufEnter" }, {
@@ -103,15 +133,16 @@ return {
     opts = {},
   },
   {
-    'Wansmer/treesj',
-    keys = { '<space>m', '<space>j', '<space>s' },
-    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    "Wansmer/treesj",
+    keys = { "<space>m", "<space>j", "<space>s" },
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {},
   },
   {
     "epwalsh/obsidian.nvim",
-    version = "*",  -- recommended, use latest release instead of latest commit
+    version = "*", -- recommended, use latest release instead of latest commit
     ft = "markdown",
+    keys = require("user.mappings").obsidian,
     cmd = {
       "ObsidianOpen",
       "ObsidianNew",
@@ -131,23 +162,29 @@ return {
     },
     -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
     event = {
-      "BufReadPre " .. vim.fn.expand "~" .. "/Notes/**.md",
-      "BufNewFile " .. vim.fn.expand "~" .. "/Notes/**.md",
+      "BufReadPre " .. vim.fn.expand("~") .. "/Notes/**.md",
+      "BufNewFile " .. vim.fn.expand("~") .. "/Notes/**.md",
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
-
-  },
-  opts = {
-    workspaces = {
-      {
-        name = "Notes",
-        path = "~/Notes",
-      },
     },
-
+    opts = {
+      workspaces = {
+        {
+          name = "Notes",
+          path = "~/Notes",
+        },
+      },
+      disable_frontmatter = true,
+      note_id_func = function(title)
+        title = title or tostring(os.time())
+        return title
+      end,
+      -- finder_mappings = {
+      --   new = "<C-b>" -- not working ??
+      -- },
+    },
   },
-}
   -- {
   --   "3rd/image.nvim",
   --   build = "luarocks --lua-version 5.1 --local install magick"

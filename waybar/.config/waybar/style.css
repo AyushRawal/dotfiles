@@ -33,13 +33,13 @@ window#waybar {
 #workspaces,
 #window,
 #clock,
-#tray,
 #custom-media,
 #battery,
 #custom-notification,
 #custom-info,
 #custom-controls,
-#idle_inhibitor
+#idle_inhibitor,
+#pulseaudio
 {
   color: #ddc7a1;
   background-color: #1d2021;
@@ -49,9 +49,27 @@ window#waybar {
   margin: 0.1rem 0.2rem;
 }
 
+#tray,
+#cpu,
+#memory,
+#network,
+#temperature {
+  color: #7c6f64;
+  background-color: #1d2021;
+  /* border: 0.1rem solid #ddc7a1; */
+  border-radius: 0.6rem;
+  padding: 0.2rem 0.5rem;
+  margin: 0.1rem 0;
+}
+
+#network {
+  font-family: MesloLGS NF;
+}
+
 #idle_inhibitor {
+  margin-left: 0.4rem;
   padding-left: 0.6rem;
-  padding-right: 0.9rem;
+  padding-right: 0.7rem;
 }
 
 #idle_inhibitor.activated {

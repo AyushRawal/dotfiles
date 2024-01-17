@@ -27,3 +27,4 @@ require("lazy").setup({ { import = "user.plugins" } }, {
 require("user.usercmds")
 require("user.autocmds")
 require("user.mappings").main()
+require("user.project")

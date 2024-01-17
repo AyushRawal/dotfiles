@@ -13,7 +13,13 @@ end, {
   desc = "set cwd to root dir",
 })
 
-vim.api.nvim_create_user_command("Term", function()
+usercmd("ProjectRoot", function()
+  vim.print(require("user.root").get())
+end, {
+  desc = "print root dir",
+})
+
+vim.api.nvim_create_user_command("Terminals", function()
   local res = ""
   for k, v in pairs(require("user.terminal").terminals) do
     local buf_name = vim.api.nvim_buf_get_name(v.buf)

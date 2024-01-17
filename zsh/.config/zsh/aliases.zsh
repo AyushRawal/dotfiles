@@ -20,26 +20,26 @@ alias d='dirs -v'
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
 
 # ls
-# if _is_cmd eza; then
-#   alias ls='eza --group-directories-first --icons'
-#   alias ll='eza --group-directories-first --icons -la'
-#   alias la='eza --group-directories-first --icons -a'
-#   alias lr='eza --group-directories-first --icons -R'
-#   lt() {
-#     depth=2
-#     [ $# -eq 0 ] || depth=$1
-#     eza --group-directories-first --tree --level=$depth
-#   }
-if _is_cmd lsd; then
-  alias ls='lsd --group-directories-first'
-  alias ll='lsd --group-directories-first -lA --date "+%_d %b %y %_H:%M"'
-  alias la='lsd --group-directories-first -A'
-  alias lr='lsd --group-directories-first -R'
+if _is_cmd eza; then
+  alias ls='eza --group-directories-first --icons'
+  alias ll='eza --group-directories-first --icons -la'
+  alias la='eza --group-directories-first --icons -a'
+  alias lr='eza --group-directories-first --icons -R'
   lt() {
     depth=2
     [ $# -eq 0 ] || depth=$1
-    lsd --group-directories-first --tree --depth=$depth
+    eza --group-directories-first --tree --level=$depth
   }
+# if _is_cmd lsd; then
+#   alias ls='lsd --group-directories-first'
+#   alias ll='lsd --group-directories-first -lA --date "+%_d %b %y %_H:%M"'
+#   alias la='lsd --group-directories-first -A'
+#   alias lr='lsd --group-directories-first -R'
+#   lt() {
+#     depth=2
+#     [ $# -eq 0 ] || depth=$1
+#     lsd --group-directories-first --tree --depth=$depth
+#   }
 else
   alias ls="ls --color=auto --group-directories-first"
   alias ll='ls --group-directories-first -lAh'

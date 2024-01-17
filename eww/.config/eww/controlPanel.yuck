@@ -4,16 +4,16 @@
                 :spacing 4
                 :space-evenly false
                 (label :text " "
-                       :class "icon"
-                       )
+                       :class "icon")
+
                 (scale :onchange "brightnessctl set {}%"
                        :value current-brightness
                        :tooltip "Brightness: ${current-brightness}%"
                        :max 101
                        :min 0)
                 (label :text current-brightness)
-                (label :text "%")
-                ))
+                (label :text "%")))
+
 (defpoll current-brightness :interval "0.1s" "brightnessctl get")
 
 ;; Volume widget ;;
@@ -28,8 +28,8 @@
                        :max 151
                        :min 0)
                 (label :text current-volume)
-                (label :text "%")
-                ))
+                (label :text "%")))
+
 (defpoll current-volume :interval "0.1s" "pactl get-sink-volume @DEFAULT_SINK@ | grep '[0-9]*%' -o | head -n 1 | tr -d '%'")
 (defpoll volStatus :interval "0.1s" "pactl get-sink-mute @DEFAULT_SINK@ | cut -d ' ' -f2")
 
@@ -45,8 +45,8 @@
                        :max 101
                        :min 0)
                 (label :text current-mic-vol)
-                (label :text "%")
-                ))
+                (label :text "%")))
+
 (defpoll current-mic-vol :interval "0.1s" "pactl get-source-volume @DEFAULT_SOURCE@ | grep '[0-9]*%' -o | head -n 1 | tr -d '%'")
 (defpoll micStatus :interval "0.1s" "pactl get-source-mute @DEFAULT_SOURCE@ | cut -d ' ' -f2")
 
@@ -55,9 +55,9 @@
           (box :orientation "v"
                :class "control-panel"
                :space-evenly false
-            (bright)
+            ;; (bright)
             (vol)
-            (mic)
-            )
-           )
+            (mic)))
+
+
 ; vim: set ft=lisp:

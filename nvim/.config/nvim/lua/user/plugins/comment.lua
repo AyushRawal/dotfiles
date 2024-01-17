@@ -2,10 +2,7 @@ local mappings = require("user.mappings")
 
 return {
   "numToStr/Comment.nvim",
-  keys = {
-    { 'gc', mode = { 'n', 'x' } },
-    { 'gb', mode = { 'n', 'x' } },
-  },
+  event = { "BufReadPost", "BufNewFile" },
   opts = {
     ---Add a space b/w comment and the line
     padding = true,

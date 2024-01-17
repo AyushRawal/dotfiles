@@ -55,7 +55,9 @@ return {
   "stevearc/oil.nvim",
   keys = require("user.mappings").oil,
   cmd = "Oil",
-  init = function()
+  lazy = false,
+  config = function(_, opts)
+    require("oil").setup(opts)
     oil_sethl()
     vim.api.nvim_create_autocmd("ColorScheme", {
       desc = "set oil hlgroups",

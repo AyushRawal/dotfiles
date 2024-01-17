@@ -37,7 +37,8 @@ end
 return {
   "SmiteshP/nvim-navic",
   event = { "BufReadPost", "BufNewFile" },
-  init = function()
+  config = function(_, opts)
+    require("nvim-navic").setup(opts)
     navic_sethl()
     vim.api.nvim_create_autocmd("ColorScheme", {
       desc = "set navic hlgroups",
@@ -53,7 +54,7 @@ return {
   opts = {
     icons = require("user.utils").kind_icons,
     highlight = true,
-    separator = " > ",
+    separator = " ❯ ",
     depth_limit = 0,
     depth_limit_indicator = "..",
     safe_output = true,

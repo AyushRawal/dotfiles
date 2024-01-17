@@ -128,15 +128,3 @@ autocmd("TermClose", {
     vim.api.nvim_buf_delete(event.buf, { force = true })
   end,
 })
-
-group = augroup("code_action_hint")
-require("user.utils").on_lsp_attach(function()
-  vim.api.nvim_create_autocmd({ "CursorHold", "WinScrolled" }, {
-    group = group,
-    callback = require("user.code_action_hint").show_hint,
-  })
-  vim.api.nvim_create_autocmd({ "TermEnter" }, {
-    group = group,
-    callback = require("user.code_action_hint").remove_hint,
-  })
-end)

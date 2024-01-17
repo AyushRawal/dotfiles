@@ -17,7 +17,7 @@ function M.norm(path)
   return path:sub(-1) == "/" and path:sub(1, -2) or path
 end
 
-M.spec = { "lsp", { ".git", "lua" }, "cwd" }
+M.spec = { "lsp", { ".git", "lua", ".nvim" }, "cwd" }
 
 M.detectors = {}
 
@@ -79,7 +79,7 @@ end
 
 function M.detect(opts)
   opts = opts or {}
-  opts.spec = opts.spec or type(vim.g.root_spec) == "table" and vim.g.root_spec or M.spec
+  opts.spec = opts.spec or M.spec
   opts.buf = (opts.buf == nil or opts.buf == 0) and vim.api.nvim_get_current_buf() or opts.buf
 
   local ret = {}
