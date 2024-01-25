@@ -52,5 +52,5 @@ return {
       end
     end,
   },
-  { "gpanders/nvim-parinfer", ft = { "lisp", "scheme" } }, -- purpose built autopairing for lisp family of languages
+  -- { "gpanders/nvim-parinfer", ft = { "lisp", "scheme" } }, -- purpose built autopairing for lisp family of languages
 }

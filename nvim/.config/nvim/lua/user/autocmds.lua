@@ -65,7 +65,11 @@ end, vim.api.nvim_create_namespace("auto_hlsearch"))
 -- remove trailing whitespaces before writing
 autocmd("BufWritePre", {
   pattern = "*",
-  command = [[%s/\s\+$//e]],
+  callback = function()
+    local save_cursor = vim.fn.getpos(".")
+    vim.cmd([[%s/\s\+$//e]])
+    vim.fn.setpos(".", save_cursor)
+  end,
   group = augroup("remove_trail_spc"),
 })
 
