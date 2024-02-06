@@ -42,7 +42,7 @@ return {
           "lisp",
           "scheme",
           "markdown",
-          "help"
+          "help",
         },
       })
       local function indent_set_hl()
@@ -180,6 +180,9 @@ return {
         title = title or tostring(os.time())
         return title
       end,
+      attachments = {
+        img_folder = "assets",
+      },
       -- finder_mappings = {
       --   new = "<C-b>" -- not working ??
       -- },

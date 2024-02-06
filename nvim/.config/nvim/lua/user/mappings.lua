@@ -226,7 +226,8 @@ M.lsp = function(bufnr)
     vim.print(vim.lsp.buf.list_workspace_folders())
   end, { desc = "list workspace folders" })
 
-  if not package.loaded["telescope"] then
+  local telescope_available, _ = pcall(require, "telescope")
+  if not telescope_available then
     buf_map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
     buf_map("n", "gI", vim.lsp.buf.implementation, { desc = "go to implementation" })
     buf_map("n", "gy", vim.lsp.buf.type_definition, { desc = "go to type definition" })

@@ -1,13 +1,13 @@
 zsh/.config/zsh/plugins
 zsh/.config/zsh/.zsh_history
-qtile/.config/qtile/__pycache__
-qtile/.config/qtile/.mypy_cache
+**/__pycache__
+**/.mypy_cache
+**/.nvim
 zsh/.config/zsh/completions
 scripts/.local/bin/scripts/ch
 scripts/.local/bin/scripts/assets
 eww/.config/eww/bkpcover.png
 helix/.config/helix/runtime
-qutebrowser/.config/qutebrowser/__pycache__/
 qutebrowser/.config/qutebrowser/bookmarks/
 qutebrowser/.config/qutebrowser/quickmarks
 swaylock/.config/swaylock/eDP-1.png

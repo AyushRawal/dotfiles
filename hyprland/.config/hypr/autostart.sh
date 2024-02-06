@@ -7,6 +7,7 @@ swayosd-server &
 swaync &
 waybar &
 eww daemon &
+kdeconnect-indicator &
 emacs --daemon &
 wl-paste --watch cliphist store &
 
