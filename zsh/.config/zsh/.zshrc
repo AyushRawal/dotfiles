@@ -52,6 +52,7 @@ source $ZDOTDIR/vim.zsh
 source $ZDOTDIR/completion.zsh
 
 _is_cmd zoxide && eval "$(zoxide init zsh --cmd cd)"
+_is_cmd mise && eval "$(mise activate zsh)"
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 _ysource ~/.config/zsh/.p10k.zsh

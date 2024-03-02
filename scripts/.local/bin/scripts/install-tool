@@ -12,8 +12,8 @@ case "$1" in
     curl https://cht.sh/:cht.sh > "$path/cht" && chmod +x "$path/cht"
     ;;
 
-  "rtx") # asdf alternative for tool version management
-    curl https://rtx.pub/rtx-latest-linux-x64 > "$path/rtx" && chmod +x "$path/rtx"
+  "mise") # asdf alternative for tool version management , formerly rtx, now also acts as alternative for direnv and make ?
+    MISE_INSTALL_PATH=$path curl https://mise.run | sh
     ;;
 
   "getnf") # get nerd fonts
