@@ -9,7 +9,13 @@ return {
       { "S", mode = "x" },
       { "<C-g>s", mode = "i" },
     },
-    opts = {},
+    opts = {
+      surrounds = {
+        ["*"] = {
+          add = { "**", "**" },
+        },
+      },
+    },
   },
   { "nvim-tree/nvim-web-devicons", lazy = true },
   {
@@ -188,24 +194,43 @@ return {
       -- },
     },
   },
-  -- {
-  --   "3rd/image.nvim",
-  --   build = "luarocks --lua-version 5.1 --local install magick"
-  --   event = {
-  --     "FileType markdown,norg",
-  --     "BufRead *.png,*.jpg,*.gif,*.webp,*.ipynb",
-  --   },
-  --   opts = {
-  --     max_width = 80,
-  --     max_height = 12,
-  --   },
-  --   config = function(_, opts)
-  --     package.path = table.concat({
-  --       package.path,
-  --       vim.fs.normalize("~/.luarocks/share/lua/5.1/?/init.lua"),
-  --       vim.fs.normalize("~/.luarocks/share/lua/5.1/?.lua"),
-  --     }, ";")
-  --     require("image").setup(opts)
-  --   end,
-  -- },
+  {
+    "3rd/image.nvim",
+    build = "luarocks --lua-version 5.1 --local install magick",
+    event = {
+      "FileType markdown,norg,markdown_inline",
+      "BufRead *.png,*.jpg,*.gif,*.webp,*.ipynb",
+    },
+    opts = {
+      max_width = 80,
+      max_height = 12,
+      window_overlap_clear_enabled = true,
+      integrations = {
+        markdown = {
+          -- obsidian vault wiki links
+          resolve_image_path = function(document_path, image_path, fallback)
+            if vim.startswith(document_path, "/home/rawal/Notes") then
+              if not vim.startswith(image_path, "assets/") then
+                image_path = "assets/" .. image_path
+              end
+            end
+            return fallback(document_path, image_path)
+          end,
+        },
+      },
+    },
+    config = function(_, opts)
+      package.path = table.concat({
+        package.path,
+        vim.fs.normalize("~/.luarocks/share/lua/5.1/?/init.lua"),
+        vim.fs.normalize("~/.luarocks/share/lua/5.1/?.lua"),
+      }, ";")
+      require("image").setup(opts)
+    end,
+  },
+  {
+    "jbyuki/nabla.nvim",
+    ft = { "markdown", "markdown_inline", "latex", "tex" },
+    keys = require("user.mappings").nabla,
+  },
 }

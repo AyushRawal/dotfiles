@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+dir-session() {
+  if [[ $# -eq 2 ]]; then
+    selected=$2
+  else
+    if [[ -z $TMUX ]]; then
+      selected=$(fd -H -t d -E .git -d 3 . ~/code ~/.dotfiles | fzf)
+    else
+      selected=$(fd -H -t d -E .git -d 3 . ~/code ~/.dotfiles | fzf-tmux)
+    fi
+  fi
+  if [[ -z $selected ]]; then
+    return
+  fi
+
+  # zoxide integration
+  command -v zoxide &>/dev/null && zoxide add "$selected"
+
+  name=$(basename "$selected" | tr . _)
+  if [[ -z $TMUX ]]; then
+    if tmux has-session -t "$name" &>/dev/null; then
+      tmux attach-session -t "$name"
+    else
+      tmux new-session -s "$name" -c "$selected"
+    fi
+  else
+    if ! tmux has-session -t "$name"; then
+      tmux new-session -ds "$name" -c "$selected"
+    fi
+    tmux switch-client -t "$name"
+  fi
+}
+
+switch-session() {
+  if [[ -z $TMUX ]]; then
+    name=$(tmux list-sessions -F \#S | fzf)
+  else
+    name=$(tmux list-sessions -F \#S | fzf-tmux)
+  fi
+  if [[ -z $name ]]; then
+    return
+  fi
+  if [[ -z $TMUX ]]; then
+    tmux attach-session -t "$name"
+  else
+    tmux switch-client -t "$name"
+  fi
+}
+
+named-session() {
+  if [[ $# -eq 2 ]]; then
+    name=$2
+  else
+    return
+  fi
+  if [[ -z $TMUX ]]; then
+    if tmux has-session -t "$name"; then
+      tmux attach-session -t "$name"
+    else
+      tmux new-session -s "$name" -c "~"
+    fi
+  else
+    if ! tmux has-session -t "$name"; then
+      tmux new-session -ds "$name" -c "~"
+    fi
+    tmux switch-client -t "$name"
+  fi
+}
+
+if [[ $1 == "dir" ]]; then
+  dir-session "$@"
+elif [[ $1 == "switch" ]]; then
+  switch-session
+elif [[ $1 == "name" ]]; then
+  named-session "$@"
+fi

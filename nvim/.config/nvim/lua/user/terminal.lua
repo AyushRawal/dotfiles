@@ -35,7 +35,8 @@ M.float = function(cmd, key)
     local win = vim.api.nvim_open_win(buf, true, win_opts)
     vim.api.nvim_buf_set_option(buf, "ft", "term")
     vim.fn.termopen(cmd, vim.empty_dict())
-    vim.keymap.set("n", "<ESC>", "<CMD>close<CR>", { buffer = buf })
+    -- vim.keymap.set("n", "<ESC>", "<CMD>close<CR>", { buffer = buf })
+    vim.keymap.set("n", "q", "<CMD>close<CR>", { buffer = buf })
     M.terminals[key] = { buf = buf, win = win }
   end
 end
@@ -63,7 +64,8 @@ local split = function(split_cmd, key)
     vim.api.nvim_win_set_option(win, "signcolumn", "no")
     vim.api.nvim_win_set_buf(win, buf)
     vim.fn.termopen(vim.o.shell, vim.empty_dict())
-    vim.keymap.set("n", "<ESC>", "<CMD>close<CR>", { buffer = buf })
+    -- vim.keymap.set("n", "<ESC>", "<CMD>close<CR>", { buffer = buf })
+    vim.keymap.set("n", "q", "<CMD>close<CR>", { buffer = buf })
     M.terminals[key] = { buf = buf, win = win }
   end
 end

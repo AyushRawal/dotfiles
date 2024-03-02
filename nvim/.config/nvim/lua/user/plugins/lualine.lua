@@ -14,6 +14,7 @@ local diagnostics_icons = require("user.utils").diagnostics_icons
 
 return {
   "nvim-lualine/lualine.nvim",
+  -- dev = true,
   opts = {
     options = {
       icons_enabled = true,
@@ -91,7 +92,7 @@ return {
             error = diagnostics_icons.Error .. " ",
             warn = diagnostics_icons.Warn .. " ",
             info = diagnostics_icons.Info .. " ",
-            hint = diagnostics_icons.Hint .. " "
+            hint = diagnostics_icons.Hint .. " ",
           },
         },
         {
@@ -117,12 +118,12 @@ return {
         {
           "fileformat",
           symbols = {
-            unix = 'LF',
-            dos = 'CRLF',
-            mac = 'CR',
+            unix = "LF",
+            dos = "CRLF",
+            mac = "CR",
           },
           color = { fg = "#a89984" },
-        }
+        },
       },
       lualine_y = {},
       lualine_z = {

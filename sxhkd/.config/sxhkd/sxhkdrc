@@ -28,7 +28,7 @@ super + ctrl + r
 # super + a
 #     polybar-msg cmd toggle
 super + Return
-	alacritty
+	kitty
 super + space
 	launcher
 super + b; {b,a}

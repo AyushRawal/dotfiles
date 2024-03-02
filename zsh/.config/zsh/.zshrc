@@ -51,6 +51,8 @@ source $ZDOTDIR/key-bindings.zsh
 source $ZDOTDIR/vim.zsh
 source $ZDOTDIR/completion.zsh
 
+_is_cmd zoxide && eval "$(zoxide init zsh --cmd cd)"
+
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 _ysource ~/.config/zsh/.p10k.zsh
 _ysource ~/.config/zsh/.p10k.rtx.zsh

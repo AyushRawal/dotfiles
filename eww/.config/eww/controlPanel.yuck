@@ -3,12 +3,13 @@
            (box :class "slider"
                 :spacing 4
                 :space-evenly false
-                (label :text " "
-                       :class "icon")
+                (label :text ""
+                       :class "bright-icon")
 
                 (scale :onchange "brightnessctl set {}%"
                        :value current-brightness
                        :tooltip "Brightness: ${current-brightness}%"
+                       ;; :hexpand true
                        :max 101
                        :min 0)
                 (label :text current-brightness)
@@ -21,10 +22,13 @@
            (box :class "slider"
                 :spacing 4
                 :space-evenly false
-                (button :class "icon" :onclick "pactl set-sink-mute @DEFAULT_SINK@ toggle" {volStatus=="yes" ? "婢 " : "墳 "})
+                (button
+                  :class "icon"
+                  :onclick "pactl set-sink-mute @DEFAULT_SINK@ toggle" {volStatus=="yes" ? "婢" : "墳"})
                 (scale :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
                        :value current-volume
                        :tooltip "Volume: ${current-volume}%"
+                       ;; :hexpand true
                        :max 151
                        :min 0)
                 (label :text current-volume)
@@ -38,10 +42,13 @@
            (box :class "slider"
                 :spacing 4
                 :space-evenly false
-                (button :class "icon" :onclick "pactl set-source-mute @DEFAULT_SOURCE@ toggle" {micStatus=="yes" ? " " : " "})
+                (button
+                  :class "icon"
+                  :onclick "pactl set-source-mute @DEFAULT_SOURCE@ toggle" {micStatus=="yes" ? "" : ""})
                 (scale :onchange "pactl set-source-volume @DEFAULT_SOURCE@ {}%"
                        :value current-mic-vol
                        :tooltip "Volume: ${current-mic-vol}%"
+                       ;; :hexpand true
                        :max 101
                        :min 0)
                 (label :text current-mic-vol)

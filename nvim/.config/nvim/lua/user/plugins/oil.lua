@@ -54,7 +54,6 @@ end
 return {
   "stevearc/oil.nvim",
   keys = require("user.mappings").oil,
-  cmd = "Oil",
   lazy = false,
   config = function(_, opts)
     require("oil").setup(opts)
@@ -146,7 +145,8 @@ return {
       ["<C-t>"] = "actions.select_tab",
       ["<C-p>"] = "actions.preview",
       ["<C-c>"] = "actions.close",
-      ["<ESC>"] = "actions.close",
+      -- ["<ESC>"] = "actions.close",
+      ["<leader>q"] = "actions.close",
       ["<C-l>"] = "actions.refresh",
       ["-"] = "actions.parent",
       ["<BS>"] = "actions.parent",

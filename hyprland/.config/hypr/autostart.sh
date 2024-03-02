@@ -8,7 +8,7 @@ swaync &
 waybar &
 eww daemon &
 kdeconnect-indicator &
-emacs --daemon &
+# emacs --daemon &
 wl-paste --watch cliphist store &
 
 # timeout 300 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' \

@@ -10,6 +10,12 @@ return {
         require("telescope").load_extension("fzf")
       end),
     },
+    {
+      "nvim-telescope/telescope-ui-select.nvim",
+      config = require("user.utils").on_plugin_load("telescope.nvim", function()
+        require("telescope").load_extension("ui-select")
+      end),
+    },
   },
   keys = require("user.mappings").telescope,
   cmd = "Telescope",
@@ -64,6 +70,9 @@ return {
           },
         },
       },
+      extensions = {
+        ["ui-select"] = require("telescope.themes").get_dropdown()
+      }
     })
   end,
 }

@@ -83,4 +83,9 @@ wttr() {
   curl -s wttr.in/$loc | less
 }
 
-alias tt='tmux new-session -c $(fzf)'
+alias tt="eztmux dir"
+alias ts="eztmux switch"
+alias tn="eztmux name"
+alias nb="eztmux dir ~/Notes"
+
+alias gs="git status"

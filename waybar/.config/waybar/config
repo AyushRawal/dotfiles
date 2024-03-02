@@ -3,7 +3,7 @@
     "layer": "top",
     "spacing": 4,
     "modules-center": ["hyprland/workspaces"],
-    "modules-left": ["clock", "custom/media"],
+    "modules-left": ["clock", "custom/pomo", "clock#day", "custom/media"],
     "modules-right": ["network", "cpu", "memory", "temperature", "idle_inhibitor", "pulseaudio", "battery", "tray"],
     "hyprland/workspaces" : {
         "all-outputs": true
@@ -41,13 +41,18 @@
         "spacing": 10
     },
     "clock": {
-        "format": "{:%I:%M %p │ %a %d %b %y}",
-        "format-alt": "{:%Y-%m-%d %H:%M:%S}",
-        "on-click-right": "eww close musicControl controlPanel info; eww open --toggle calendar"
+        "format": "{:%I:%M %p}",
+        "format-alt": "{:%H:%M:%S}",
+        "on-click-right": "eww close calendar || (eww close-all && eww open calendar)",
+        "interval": 1
+    },
+    "clock#day": {
+        "format": "{:%a %d %b}"
     },
     "cpu": {
         "format": "{usage}% ",
-        "tooltip": false
+        "tooltip": false,
+        "interval": 3
     },
     "memory": {
         "format": "{used}GiB ",
@@ -76,12 +81,13 @@
         "format-icons": ["", "", "", "", ""]
     },
     "network": {
-        "format": "{bandwidthDownBytes} {bandwidthUpBytes}",
+        "format": "{bandwidthDownBytes}  : {bandwidthUpBytes} ",
         "tooltip-format": "{ifname} via {gwaddr}",
         "tooltip-format-wifi": "{essid}: {signalStrength}%  ",
         "format-linked": "{ifname} (No IP)",
         "format-disconnected": "",
-        "format-alt": "IP: {ipaddr}"
+        "format-alt": "IP: {ipaddr}",
+        "interval": 3
     },
     "pulseaudio": {
         "tooltip": false,
@@ -100,7 +106,7 @@
             "car": " ",
             "default": ["", "", ""]
         },
-        "on-click-right": "eww close calendar musicControl info; eww open --toggle controlPanel",
+        "on-click-right": "eww close controlPanel || (eww close-all && eww open controlPanel)",
         "on-scroll-up": "",
         "on-scroll-down": ""
     },
@@ -132,7 +138,12 @@
         "escape": true,
         "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null",
         "on-click": "playerctl play-pause"
+    },
+    "custom/pomo": {
+        "format": {},
+        "exec": "pomo",
+        "interval": 1
     }
 }
 
-// vim:ft=json:commentstring=//\ %s
+// vim:ft=jsonc

@@ -23,6 +23,9 @@ require("lazy").setup({ { import = "user.plugins" } }, {
   change_detection = {
     notify = false,
   },
+  dev = {
+    path = "~/code/opensource",
+  },
 })
 require("user.usercmds")
 require("user.autocmds")

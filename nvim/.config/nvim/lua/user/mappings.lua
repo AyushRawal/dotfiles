@@ -12,6 +12,7 @@ M.wk = {
   f = { name = "find" },
   b = { name = "buffers" },
   g = { name = "git", t = { "toggle" } },
+  n = { name = "notes" },
 }
 
 M.main = function()
@@ -23,6 +24,9 @@ M.main = function()
   map("n", "<C-j>", "<C-w>j")
   map("n", "<C-k>", "<C-w>k")
   map("n", "<C-l>", "<C-w>l")
+
+  -- clear highlights
+  map("n", "<ESC>", "<CMD>noh<CR>")
 
   -- visual movement but not in operator pending mode
   map("n", "j", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', { expr = true })
@@ -77,7 +81,7 @@ M.main = function()
   map("n", "<leader>tf", require("user.terminal").find_term, { desc = "find terminal" })
 
   -- escape terminal mode
-  map("t", "<Esc>", [[<C-\><C-n>]])
+  map("t", "<Esc><Esc>", [[<C-\><C-n>]])
 
   -- resizing
   map("n", "<C-Up>", "<CMD>resize +2<CR>", { desc = "increase split height" })
@@ -158,6 +162,7 @@ M.cmp = function()
 
     -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     ["<CR>"] = cmp.mapping.confirm({ select = false }),
+    ["<C-y>"] = cmp.mapping.confirm({ select = false }),
 
     -- ["<Tab>"] = cmp.mapping(function(fallback)
     --   if cmp.visible() then
@@ -197,7 +202,7 @@ M.luasnip = function()
     end
   end)
 
-  map("i", "<C-;>", function ()
+  map("i", "<C-;>", function()
     if luasnip.choice_active() then
       luasnip.change_choice(1)
     end
@@ -402,6 +407,16 @@ M.obsidian = {
   { "<leader>nd", "<CMD>ObsidianToday<CR>", desc = "today's note" },
   { "<leader>nt", "<CMD>ObsidianTemplate<CR>", desc = "insert template" },
   { "<leader>np", "<CMD>ObsidianPasteImg<CR>", desc = "paste image from clipboard at cursor position" },
+}
+
+M.nabla = {
+  {
+    "<leader>nl",
+    function()
+      require("nabla").toggle_virt({ autogen = true })
+    end,
+    desc = "Toggle latex preview",
+  },
 }
 
 return M

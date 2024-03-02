@@ -9,34 +9,43 @@ $blue:    #7daea3;
 $magenta: #d3869b;
 $cyan:    #89b482;
 
+// @import "variables.scss";
+// @import "widget.scss";
+// @import "floating-widget.scss";
+// @import "icon-image.scss";
+// @import "menu.scss";
+// @import "media.scss";
+
 * {
-  all: unset;
-  color: $foreground;
+  // all: unset;
+  // color: $foreground;
   // font-family: JetBrainsMono Nerd Font;
-  font-family: Meslo LGS NF;
+  // font-family: Meslo LGS NF;
 }
 
 /* Calendar */
 
 .cal-box {
-  background-color: $background;
-  border-radius: 8px;
-  border: 2px solid;
+  // all: unset;
+  // background-color: $background;
+  // border-radius: 8px;
+  // border: 2px solid;
   font-family: JetBrainsMono Nerd Font;
   font-size: 0.9em;
 
   .cal-inner-box {
-    padding: 0.8rem 0.8rem .3rem 1rem;
+    // padding: 0.8rem 0.8rem .3rem 1rem;
 
     .cal {
-      padding: .6rem .20rem 0.2rem 0.4rem;
-      margin-left: 10px;
+      padding: .6rem .4rem 0.2rem 0.4rem;
+      // margin-left: 10px;
     }
   }
 }
 
 calendar:selected {
   color: $red;
+  background: $background;
 }
 
 calendar.header {
@@ -58,64 +67,81 @@ calendar:indeterminate {
 }
 
 .control-panel {
-  background-color: $background;
-  border-radius: 10px;
+  // background-color: $background;
+  // border-radius: 10px;
   border: 2px solid $foreground;
   font-size: 0.9em;
-  padding: 0 4px 4px 0px;
+  padding: 0 0.5rem 0 0.5rem;
 }
-
+//
 .icon {
   font-size: 1.4em;
+  // padding-left: 1rem;
+  margin: 0.3rem 0;
+  // background: $background;
+}
+.bright-icon {
+  font-size: 1.4em;
+  padding-left: 0.8rem;
+  // margin: 0.3rem 0;
+  margin-right: 1rem;
 }
 
 .slider {
-  padding: 4px 10px 4px 10px;
-  background-color: $background;
-  border-radius: 10px;
+  // padding: 4px 10px 4px 10px;
+//   background-color: $background;
+  // border-radius: 10px;
+  margin-left: 0.5rem;
 }
 
 scale trough {
-  background-color: $background-alt;
+  // background-color: $background-alt;
   border-radius: 5px;
-  margin: 0 0.3em 0 0.3em;
+  // margin: 0 0.3em 0 0.3em;
   min-height: 15px;
-  min-width: 220px;
+  min-width: 280px;
 }
 
 scale trough highlight {
-  background-color: $foreground;
+  // background-color: $foreground;
   border-radius: 5px;
 }
 
 
 .music-player{
-  background-color: $background;
-  border: 2px solid $foreground;
+  // background-color: $background;
+  // border: 2px solid $foreground;
+  // height: 145px;
 }
 
 .controls {
-  margin-left: -22rem;
-  min-width: 15em;
-  label {
-    color: $foreground;
-  }
+  font-family: JetBrainsMono NF;
+  font-size: 1rem;
+  // margin-left: -22rem;
+  // min-width: 15em;
+  // label {
+  //   color: $foreground;
+  // }
 }
 
 .album_art {
   background-size: cover;
   background-position: center;
-  padding: 11rem;
-  opacity: 0.30;
+  // padding: 11rem;
+  // padding: 4rem;
+  margin: 0.4rem;
+  // min-width: 6rem;
+  // max-height: 6rem;
+  // opacity: 0.30;
 }
 
 .artist {
   font-style: italic;
-  font-size : 1.1em;
+  font-size : 1rem;
 }
 .song{
   font-weight: bold;
-  font-size: 1.3em;
+  font-size: 1.2rem;
 }
 .btn_prev, .btn_next {
   font-size : 2.8em;

@@ -66,6 +66,13 @@ opt.softtabstop = 4 --> no of spaces which <tab> counts for performing <tab> ops
 opt.ignorecase = true --> case insensitive search
 opt.smartcase = true --> override ignorecase when using uppercase chars
 
+vim.opt.inccommand = 'split' --> Preview substitutions live
+
+vim.opt.breakindent = true --> visually indented wrapped lines
+vim.opt.linebreak = true --> wrap at `breakat` instead of last char
+
+vim.opt.virtualedit = "block" --> Allow going past eol in visual block mode
+
 -- disable perl and ruby providers
 --g.loaded_perl_provider = 0
 --g.loaded_ruby_provider = 0

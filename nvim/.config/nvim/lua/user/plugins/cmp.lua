@@ -7,6 +7,7 @@ return {
     "hrsh7th/nvim-cmp",
     event = { "InsertEnter", "CmdLineEnter" },
     dependencies = {
+      "L3MON4D3/LuaSnip",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
@@ -101,7 +102,32 @@ return {
       end,
     },
     config = function()
+      -- latex snippets in markdown math blocks
+      require("luasnip").filetype_extend("latex", { "tex" })
+      require("luasnip").setup({
+        ft_func = require("luasnip.extras.filetype_functions").from_cursor_pos,
+        load_ft_func = require("luasnip.extras.filetype_functions").extend_load_ft({
+          markdown = { "latex" },
+          markdown_inline = { "latex" },
+        }),
+      })
       mappings.luasnip()
+    end,
+  },
+  {
+    "iurimateus/luasnip-latex-snippets.nvim",
+    dependencies = {
+      "L3MON4D3/LuaSnip",
+    },
+    ft = { "markdown, markdown_inline", "tex", "latex" },
+    config = function()
+      require("luasnip-latex-snippets").setup({
+        use_treesitter = true,
+        allow_on_markdown = true,
+      })
+      require("luasnip").config.setup({
+        enable_autosnippets = true,
+      })
     end,
   },
 }

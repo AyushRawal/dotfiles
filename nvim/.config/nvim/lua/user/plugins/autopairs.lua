@@ -13,6 +13,8 @@ return {
       local cond = require("nvim-autopairs.conds")
       npairs.setup(npairs_opts)
 
+      npairs.add_rule(rule("$", "$", { "tex", "latex", "markdown", "markdown_inline" }))
+
       local function add_in_pair_for_pair(a1, ins, a2, lang)
         local r = rule(ins, ins, lang)
           :with_pair(function(opts)
