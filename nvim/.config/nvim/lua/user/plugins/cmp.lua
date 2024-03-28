@@ -114,20 +114,20 @@ return {
       mappings.luasnip()
     end,
   },
-  {
-    "iurimateus/luasnip-latex-snippets.nvim",
-    dependencies = {
-      "L3MON4D3/LuaSnip",
-    },
-    ft = { "markdown, markdown_inline", "tex", "latex" },
-    config = function()
-      require("luasnip-latex-snippets").setup({
-        use_treesitter = true,
-        allow_on_markdown = true,
-      })
-      require("luasnip").config.setup({
-        enable_autosnippets = true,
-      })
-    end,
-  },
+  -- {
+  --   "iurimateus/luasnip-latex-snippets.nvim",
+  --   dependencies = {
+  --     "L3MON4D3/LuaSnip",
+  --   },
+  --   ft = { "markdown, markdown_inline", "tex", "latex" },
+  --   config = function()
+  --     require("luasnip-latex-snippets").setup({
+  --       use_treesitter = true,
+  --       allow_on_markdown = true,
+  --     })
+  --     require("luasnip").config.setup({
+  --       enable_autosnippets = true,
+  --     })
+  --   end,
+  -- },
 }

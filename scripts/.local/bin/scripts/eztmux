@@ -1,77 +1,57 @@
 #!/usr/bin/env bash
 
-dir-session() {
-  if [[ $# -eq 2 ]]; then
-    selected=$2
-  else
-    if [[ -z $TMUX ]]; then
-      selected=$(fd -H -t d -E .git -d 3 . ~/code ~/.dotfiles | fzf)
-    else
-      selected=$(fd -H -t d -E .git -d 3 . ~/code ~/.dotfiles | fzf-tmux)
-    fi
-  fi
-  if [[ -z $selected ]]; then
-    return
-  fi
+list-directories() {
+ fd -H -t d -E .git -E node_modules . "$HOME/code" "$HOME/.dotfiles"
+}
 
-  # zoxide integration
-  command -v zoxide &>/dev/null && zoxide add "$selected"
+# shellcheck disable=SC2086
+print-usage() {
+  echo "Usage:"
+  echo "    $(basename $0) s | session [optional: session-name]"
+  echo "    $(basename $0) d | dir     [optional: directory]"
+  echo "    $(basename $0) help"
+}
 
-  name=$(basename "$selected" | tr . _)
+switch-or-create-session() {
+  local name=$1
+  local dir=$2
   if [[ -z $TMUX ]]; then
     if tmux has-session -t "$name" &>/dev/null; then
       tmux attach-session -t "$name"
     else
-      tmux new-session -s "$name" -c "$selected"
+      tmux new-session -s "$name" -c "$dir"
     fi
   else
-    if ! tmux has-session -t "$name"; then
-      tmux new-session -ds "$name" -c "$selected"
-    fi
-    tmux switch-client -t "$name"
-  fi
-}
-
-switch-session() {
-  if [[ -z $TMUX ]]; then
-    name=$(tmux list-sessions -F \#S | fzf)
-  else
-    name=$(tmux list-sessions -F \#S | fzf-tmux)
-  fi
-  if [[ -z $name ]]; then
-    return
-  fi
-  if [[ -z $TMUX ]]; then
-    tmux attach-session -t "$name"
-  else
-    tmux switch-client -t "$name"
-  fi
-}
-
-named-session() {
-  if [[ $# -eq 2 ]]; then
-    name=$2
-  else
-    return
-  fi
-  if [[ -z $TMUX ]]; then
-    if tmux has-session -t "$name"; then
-      tmux attach-session -t "$name"
-    else
-      tmux new-session -s "$name" -c "~"
-    fi
-  else
-    if ! tmux has-session -t "$name"; then
-      tmux new-session -ds "$name" -c "~"
+    if ! tmux has-session -t "$name" &>/dev/null; then
+      tmux new-session -ds "$name" -c "$dir"
     fi
     tmux switch-client -t "$name"
   fi
 }
 
-if [[ $1 == "dir" ]]; then
-  dir-session "$@"
-elif [[ $1 == "switch" ]]; then
-  switch-session
-elif [[ $1 == "name" ]]; then
-  named-session "$@"
+if [[ $# -ne 1 && $# -ne 2 ]]; then
+  print-usage
+  exit 1
+fi
+
+if [[ $1 == "dir" || $1 == "d" ]]; then
+  selected=$2
+  [[ -z $selected ]] && selected=$(list-directories | fzf-tmux)
+  [[ -z $selected ]] && exit
+  [[ ! -d $selected ]] && echo "Not a directory: $selected" && exit 1
+  selected=$(readlink -f "$selected")   # handle symlinks, (.) and (..)
+  command -v zoxide &>/dev/null && zoxide add "$selected" # zoxide integration
+  name=$(basename "$selected" | tr ". " _)
+  switch-or-create-session "$name" "$selected"
+elif [[ $1 == "session" || $1 == "s" ]]; then
+  name=$2
+  [[ -z $name ]] && name=$(tmux list-sessions -F \#S | fzf-tmux --bind "enter:accept-or-print-query")
+  [[ -z $name ]] && exit
+  switch-or-create-session "$name" "$HOME"
+elif [[ $1 == "help" ]]; then
+  print-usage
+else
+  echo "Inavlid subcommand: $1"
+  print-usage
+  exit 1
 fi

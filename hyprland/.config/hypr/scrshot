@@ -33,5 +33,5 @@ esac
 
 if [[ $success == 1 ]]; then
   notify-send "Screenshot saved to $file and copied to clipboard"
-  wl-copy "$file"
+  wl-copy < "$file"
 fi

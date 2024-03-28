@@ -201,6 +201,7 @@ return {
       "FileType markdown,norg,markdown_inline",
       "BufRead *.png,*.jpg,*.gif,*.webp,*.ipynb",
     },
+    enabled = false,
     opts = {
       max_width = 80,
       max_height = 12,

@@ -84,8 +84,7 @@ wttr() {
 }
 
 alias tt="eztmux dir"
-alias ts="eztmux switch"
-alias tn="eztmux name"
+alias ts="eztmux session"
 alias nb="eztmux dir ~/Notes"
 
 alias gs="git status"

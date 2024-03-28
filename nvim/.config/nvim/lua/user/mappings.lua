@@ -99,6 +99,8 @@ M.main = function()
       vim.opt.tabstop = 2
     end
   end, { desc = "toggle indent size" })
+  map("i", "<F3>", "<C-R>=strftime('%Y-%m-%d')<CR>")
+  map("i", "<F4>", "<C-R>=strftime('%H:%M')<CR>")
 
   map("n", "<leader>li", "<CMD>LspInfo<CR>", { desc = "lsp info" })
 

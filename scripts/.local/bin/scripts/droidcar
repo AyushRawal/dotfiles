@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+IP="192.168.1.10"
+
+name=$(hyprctl monitors | grep -o -m 1 "HEADLESS-[0-9]\+")
+while [[ -n "$name" ]]; do
+  hyprctl output remove "$name"
+  name=$(hyprctl monitors | grep -o -m 1 "HEADLESS-[0-9]\+")
+done
+
+hyprctl output create headless
+name=$(hyprctl monitors | grep -o "HEADLESS-[0-9]\+")
+[[ -z "$name" ]] && exit 1
+hyprctl keyword monitor "$name",2224x1080,-1112x0,2
+wayvnc -d -o "$name" "$IP"
+hyprctl output remove "$name"

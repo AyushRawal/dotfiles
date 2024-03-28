@@ -9,6 +9,7 @@ waybar &
 eww daemon &
 kdeconnect-indicator &
 # emacs --daemon &
+sleep 2 && mdremind &> ~/.cache/mdremind.log &
 wl-paste --watch cliphist store &
 
 # timeout 300 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on' \
