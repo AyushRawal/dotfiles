@@ -8,6 +8,8 @@ config_version: 2
 settings:
   backend:
     global: webengine
+  colors.webpage.darkmode.algorithm:
+    global: lightness-cielab
   colors.webpage.darkmode.enabled:
     global: true
   colors.webpage.preferred_color_scheme:

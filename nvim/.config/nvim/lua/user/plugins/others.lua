@@ -16,6 +16,17 @@ return {
         },
       },
     },
+    config = function(opts)
+      require("nvim-surround").setup(opts)
+      local function surround_set_hl()
+        vim.api.nvim_set_hl(0, "NvimSurroundHighlight", { link = "@text.warning" })
+      end
+      surround_set_hl()
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        callback = surround_set_hl,
+        group = vim.api.nvim_create_augroup("user_surround_hl", { clear = true }),
+      })
+    end,
   },
   { "nvim-tree/nvim-web-devicons", lazy = true },
   {
@@ -32,36 +43,40 @@ return {
       },
     },
   },
-  -- {
-  --   "lukas-reineke/indent-blankline.nvim",
-  --   main = "ibl",
-  --   opts = {},
-  --   event = { "BufReadPost", "BufNewFile" },
-  -- },
   {
     "nvimdev/indentmini.nvim",
     event = { "BufReadPost", "BufNewFile" },
+    -- dev = true,
     config = function()
       require("indentmini").setup({
         char = "│",
         exclude = {
           "lisp",
           "scheme",
-          "markdown",
-          "help",
+          "quickfix",
         },
       })
       local function indent_set_hl()
-        local link = "Comment"
-        local ibl_hl = vim.api.nvim_get_hl(0, { name = "IblIndent" })
-        if not vim.tbl_isempty(ibl_hl) then
-          link = "IblIndent"
+        local indent_hl = vim.api.nvim_get_hl(0, { name = "IndentLine" })
+        if vim.tbl_isempty(indent_hl) then
+          indent_hl = vim.api.nvim_get_hl(0, { name = "IblIndent" })
         end
-        ibl_hl = vim.api.nvim_get_hl(0, { name = "IndentBlanklineChar" })
-        if not vim.tbl_isempty(ibl_hl) then
-          link = "IndentBlanklineChar"
+        if vim.tbl_isempty(indent_hl) then
+          print("hi")
+          indent_hl = vim.api.nvim_get_hl(0, { name = "Whitespace" })
         end
-        vim.api.nvim_set_hl(0, "IndentLine", { link = link })
+        indent_hl.nocombine = true
+        vim.api.nvim_set_hl(0, "IndentLine", indent_hl)
+
+        local scope_hl = vim.api.nvim_get_hl(0, { name = "IndentLineCurrent" })
+        if vim.tbl_isempty(scope_hl) then
+          scope_hl = vim.api.nvim_get_hl(0, { name = "IblScope" })
+        end
+        if vim.tbl_isempty(scope_hl) then
+          scope_hl = vim.api.nvim_get_hl(0, { name = "LineNr" })
+        end
+        scope_hl.nocombine = true
+        vim.api.nvim_set_hl(0, "IndentLineCurrent", scope_hl)
       end
       indent_set_hl()
       vim.api.nvim_create_autocmd("ColorScheme", {

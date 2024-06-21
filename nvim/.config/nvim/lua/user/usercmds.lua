@@ -19,7 +19,7 @@ end, {
   desc = "print root dir",
 })
 
-vim.api.nvim_create_user_command("Terminals", function()
+usercmd("Terminals", function()
   local res = ""
   for k, v in pairs(require("user.terminal").terminals) do
     local buf_name = vim.api.nvim_buf_get_name(v.buf)
@@ -27,3 +27,7 @@ vim.api.nvim_create_user_command("Terminals", function()
   end
   vim.print(res)
 end, { desc = "list terminals" })
+
+usercmd("CPmode", function()
+  require("user.mappings").cp()
+end, { desc = "setup for cp" })

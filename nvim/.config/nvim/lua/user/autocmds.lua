@@ -77,21 +77,13 @@ autocmd("BufWritePre", {
 group = augroup("cursorline_on_focus")
 autocmd("WinEnter", {
   callback = function()
-    -- local ok, cl = pcall(vim.api.nvim_win_get_var, 0, "auto-cursorline")
-    -- if ok and cl then
     vim.wo.cursorline = true
-    --   vim.api.nvim_win_del_var(0, "auto-cursorline")
-    -- end
   end,
   group = group,
 })
 autocmd("WinLeave", {
   callback = function()
-    -- local cl = vim.wo.cursorline
-    -- if cl then
-    --   vim.api.nvim_win_set_var(0, "auto-cursorline", cl)
     vim.wo.cursorline = false
-    -- end
   end,
   group = group,
 })
@@ -126,9 +118,15 @@ autocmd("BufWritePre", {
 })
 
 -- do not display process exited msg on terminal close
-autocmd("TermClose", {
-  group = augroup("term_close"),
-  callback = function(event)
-    vim.api.nvim_buf_delete(event.buf, { force = true })
-  end,
-})
+-- autocmd("TermClose", {
+--   group = augroup("term_close"),
+--   callback = function(event)
+--     vim.api.nvim_buf_delete(event.buf, { force = true })
+--   end,
+-- })
+
+-- autocmd("LspProgress", {
+--   group = augroup("lsp_progress"),
+--   -- callback = require("lualine").refresh
+--   callback = function() print(vim.lsp.status()) end
+-- })

@@ -6,6 +6,7 @@ swaybg --mode fill --image ~/Pictures/Wallpapers/Universal/home-sweet-home.jpg &
 swayosd-server &
 swaync &
 waybar &
+playerctld daemon &
 eww daemon &
 kdeconnect-indicator &
 # emacs --daemon &

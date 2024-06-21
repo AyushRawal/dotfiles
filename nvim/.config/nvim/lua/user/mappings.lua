@@ -63,12 +63,9 @@ M.main = function()
   -- stylua: ignore start
   -- save me
   map("n", "<CR>", function()
-    -- change word under cursor normally
-    if vim.o.modifiable then return "ciw" end
-    -- follow tags in help windows
-    if vim.o.buftype == "help" then return "<C-]>" end
-    -- keep enter in other non-modifiable windows such as quickfix etc.
-    return "<CR>"
+    if vim.o.modifiable then return "ciw" end          --> change word under cursor normally
+    if vim.o.buftype == "help" then return "<C-]>" end --> follow tags in help windows
+    return "<CR>"                                      --> keep enter in other non-modifiable windows such as quickfix etc.
   end, { desc = "ciw / follow help tags / default", expr = true })
   -- stylua: ignore end
 
@@ -99,8 +96,9 @@ M.main = function()
       vim.opt.tabstop = 2
     end
   end, { desc = "toggle indent size" })
-  map("i", "<F3>", "<C-R>=strftime('%Y-%m-%d')<CR>")
-  map("i", "<F4>", "<C-R>=strftime('%H:%M')<CR>")
+
+  map("i", "<F3>", "<C-R>=strftime('%Y-%m-%d')<CR>") --> print date at cursor
+  map("i", "<F4>", "<C-R>=strftime('%H:%M')<CR>") --> print time at cursor
 
   map("n", "<leader>li", "<CMD>LspInfo<CR>", { desc = "lsp info" })
 
@@ -108,8 +106,6 @@ M.main = function()
   map("n", "gl", vim.diagnostic.open_float, { desc = "current line diagnostics" })
   map("n", "<leader>db", vim.diagnostic.setloclist, { desc = "set location list (buffer diagnostics)" })
   map("n", "<leader>da", vim.diagnostic.setqflist, { desc = "set quickfix list (all diagnostics)" })
-  map("n", "[d", vim.diagnostic.goto_prev, { desc = "previous diagnostic" })
-  map("n", "]d", vim.diagnostic.goto_next, { desc = "next diagnostic" })
 
   map("n", "<leader>gg", function()
     require("user.terminal").float("lazygit")
@@ -118,6 +114,18 @@ M.main = function()
   map("n", "<leader>bb", "<CMD>b#<CR>", { desc = "pick buffer" })
   map("n", "]b", "<CMD>bnext<CR>", { desc = "next buffer" })
   map("n", "[b", "<CMD>bprevious<CR>", { desc = "previous buffer" })
+end
+
+-- competitive programming setup
+M.cp = function()
+  map("n", "<A-y>", "<CMD>!wl-paste > input.txt<CR>")
+  map("n", "<F5>", "<CMD>!runcpp %<CR>")
+  map("n", "<A-n>", function()
+    vim.ui.input({prompt = "Name: "}, function(input)
+      vim.cmd("!ch " .. input)
+      vim.cmd("e " .. input .. ".cpp")
+    end)
+  end)
 end
 
 M.mini_bufremove = {
@@ -219,11 +227,13 @@ M.lsp = function(bufnr)
   end
 
   buf_map("n", "gD", vim.lsp.buf.declaration, { desc = "go to declaration" })
-  buf_map("n", "K", vim.lsp.buf.hover, { desc = "hover" })
   buf_map("n", "gs", vim.lsp.buf.signature_help, { desc = "show signature help" })
   buf_map("n", "<leader>lr", vim.lsp.buf.rename, { desc = "rename object" })
   buf_map("n", "<leader>la", vim.lsp.buf.code_action, { desc = "code action" })
   buf_map("n", "<leader>lc", vim.lsp.codelens.run, { desc = "codelens run" })
+  buf_map("n", "<leader>li", function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
+  end, { desc = "toggle inlay hints" })
   buf_map({ "n", "x" }, "<leader>lf", function()
     vim.lsp.buf.format({ async = true })
   end, { desc = "lsp format buffer / range" })

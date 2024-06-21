@@ -75,6 +75,10 @@ return {
         require("user.mappings").lsp(bufnr)
         lsp_highlight_document(client)
         codelens_autorefresh(client)
+        -- enable inlay hints
+        if client.supports_method("textDocument/inlayHint") then
+          vim.lsp.inlay_hint.enable()
+        end
       end
 
       local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
@@ -83,7 +87,6 @@ return {
         {},
         vim.lsp.protocol.make_client_capabilities(),
         has_cmp and cmp_nvim_lsp.default_capabilities() or {}
-        -- opts.capabilities or {}
       )
       require("mason-lspconfig").setup()
       local lspconfig = require("lspconfig")
@@ -98,12 +101,12 @@ return {
           vim.g.rustaceanvim = {
             tools = {
               float_win_config = {
-                border = "single"
-              }
+                border = "single",
+              },
             },
             server = {
-              on_attach = on_attach
-            }
+              on_attach = on_attach,
+            },
           }
         end,
         ["lua_ls"] = function()

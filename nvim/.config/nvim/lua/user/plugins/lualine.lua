@@ -68,6 +68,11 @@ return {
           "diff",
           source = diff_source,
         },
+        -- {
+        --   function()
+        --     return vim.lsp.status()
+        --   end
+        -- },
         {
           function()
             return "%="
@@ -249,8 +254,7 @@ return {
         },
         {
           function()
-            -- TODO replace with vim.lsp.get_clients() after update to 0.10
-            local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+            local clients = vim.lsp.get_clients({ bufnr = 0 })
             if next(clients) == nil then
               return ""
             end

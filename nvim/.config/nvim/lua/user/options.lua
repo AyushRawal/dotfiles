@@ -17,7 +17,6 @@ opt.laststatus = 3 --> goobal statusline
 opt.signcolumn = "yes" --> always show sign column (left of line numbers)
 opt.showtabline = 2 --> always show tabline
 opt.showmode = false --> disable insert and visual mode msg in cmdline
-opt.fillchars = { eob = " " } --> remove ~ under line numbers
 opt.shortmess:append("cI") --> don't show redundant msgs from ins-completion-menu & disable default startup screen
 opt.completeopt = { "menuone", "noselect" } --> for cmp, show menu for even a single entry and don't select by default
 -- opt.pumheight = 10 --> no. of entries in pop-up menu
@@ -26,7 +25,7 @@ opt.list = true -- show listchars (default: tab, trail, nbsp)
 
 -- opt.iskeyword:append("-") --> consider words with '-' as single word
 opt.iskeyword:remove("_") --> don't consider words joined with '_' as single word
-opt.grepprg = "rg --vimgrep --smart-case --follow" --> get persistent recursive grep results in quickfix list
+opt.grepprg = "rg --vimgrep --smart-case --follow --hidden" --> get persistent recursive grep results in quickfix list
 
 opt.scrolloff = 10 -- minimal number of screen lines to keep above and below the cursor.
 opt.sidescrolloff = 10 -- minimal number of screen lines to keep left and right of the cursor.
@@ -44,6 +43,25 @@ opt.undofile = true --> undo persistence
 opt.foldmethod = "indent" -- folding, set to "expr" for treesitter based folding
 -- opt.foldenable = false
 opt.foldlevel = 99
+
+-- pretty folds
+function FoldText()
+  local n_lines = vim.v.foldend - vim.v.foldstart
+  local text_lines = n_lines == 1 and " line" or " lines"
+  local first_line = vim.fn.getbufoneline(vim.api.nvim_get_current_buf(), vim.v.foldstart)
+  first_line = first_line:gsub("^%s+", "")
+  local step = vim.o.expandtab and (" "):rep(vim.o.shiftwidth - 1) or (" "):rep(vim.o.tabstop - 1)
+  step = "│" .. step
+  local indent = step:rep(#vim.v.folddashes - 1)
+  local text = indent .. first_line .. " ······ " .. n_lines .. text_lines .. " "
+  return text
+end
+vim.opt.foldtext = "v:lua.FoldText()"
+
+opt.fillchars = {
+  eob = " ",  --> remove ~ under line numbers
+  fold = "·"  --> foldtext fill char
+}
 
 opt.timeoutlen = 600 --> time to wait for a mapped sequence to complete
 opt.updatetime = 300 --> faster completion (default: 400ms)
@@ -66,7 +84,7 @@ opt.softtabstop = 4 --> no of spaces which <tab> counts for performing <tab> ops
 opt.ignorecase = true --> case insensitive search
 opt.smartcase = true --> override ignorecase when using uppercase chars
 
-vim.opt.inccommand = 'split' --> Preview substitutions live
+vim.opt.inccommand = "split" --> Preview substitutions live
 
 vim.opt.breakindent = true --> visually indented wrapped lines
 vim.opt.linebreak = true --> wrap at `breakat` instead of last char
@@ -113,35 +131,32 @@ end
 -- diagnostics
 vim.diagnostic.config({
   virtual_text = {
-    active = true,
-    -- TODO shift this to prefix on 0.10
-    format = function(diagnostic)
-      local icon
+    source = false,
+    prefix = function(diagnostic, _, _)
       for severity, i in pairs(require("user.utils").diagnostics_icons) do
         if diagnostic.severity == vim.diagnostic.severity[severity:upper()] then
-          icon = i
-          break
+          return i
         end
       end
-      return string.format("%s %s", icon, diagnostic.message)
+      return ""
     end,
-    prefix = "",
   },
-  signs = true,
+  signs = function()
+    local signs = { text = {}, numhl = {}, linehl = {} }
+    for _, x in ipairs({ "Error", "Warn", "Hint", "Info" }) do
+      local severity = vim.diagnostic.severity[x:upper()]
+      signs.text[severity] = ""
+      signs.linehl[severity] = ""
+      signs.numhl[severity] = "DiagnosticSign" .. x
+    end
+    return signs
+  end,
   update_in_insert = false,
-  underline = false,
+  underline = true,
   severity_sort = true,
   float = {
-    focusable = false,
-    style = "minimal",
+    scope = "line",
+    source = true,
     border = "single",
-    source = "always",
-    header = "",
-    prefix = "",
   },
 })
-
-for x, _ in pairs(require("user.utils").diagnostics_icons) do
-  local t = "DiagnosticSign" .. x
-  vim.fn.sign_define(t, { texthl = t, text = "", numhl = t })
-end

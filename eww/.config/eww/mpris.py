@@ -140,6 +140,9 @@ def mpris_data():
             continue
 
         player_name = clean_name(name)
+        if player_name == "playerctld":
+            continue
+
         title = metadata.get("xesam:title", "Unknown")
         artist = metadata.get("xesam:artist", ["Unknown"])[0]
         album = metadata.get("xesam:album", "Unknown")
