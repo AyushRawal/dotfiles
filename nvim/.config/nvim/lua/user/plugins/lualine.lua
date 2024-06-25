@@ -68,11 +68,6 @@ return {
           "diff",
           source = diff_source,
         },
-        -- {
-        --   function()
-        --     return vim.lsp.status()
-        --   end
-        -- },
         {
           function()
             return "%="
@@ -158,21 +153,6 @@ return {
     },
     winbar = {
       lualine_c = {
-        -- {
-        --   function()
-        --     return "󰐅"
-        --   end,
-        --   color = function()
-        --     local colors = {
-        --       green = vim.g.terminal_color_2,
-        --       red = vim.g.terminal_color_1,
-        --     }
-        --     local buf = vim.api.nvim_get_current_buf()
-        --     local ts = vim.treesitter.highlighter.active[buf]
-        --     return { fg = ts and not vim.tbl_isempty(ts) and colors.green or colors.red }
-        --   end,
-        --   -- separator = "│",
-        -- },
         {
           function()
             if not package.loaded["nvim-navic"] then

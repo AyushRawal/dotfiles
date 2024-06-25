@@ -85,7 +85,7 @@ return {
       })
     end,
   },
-  { "j-hui/fidget.nvim", opts = {}, event = { "LspAttach" } },
+  -- { "j-hui/fidget.nvim", opts = {}, event = { "LspAttach" } },
   {
     "NvChad/nvim-colorizer.lua",
     event = { "BufNewFile", "BufReadPost" },

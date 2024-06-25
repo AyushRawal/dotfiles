@@ -1,4 +1,5 @@
-vim.g.confirm_load_session = true
+local confirm_load_session = false
+local confirm_update_session = false
 vim.g.session_loaded = false
 
 local config_dir = require("user.root").get() .. "/.nvim"
@@ -14,17 +15,24 @@ end, {})
 
 vim.api.nvim_create_user_command("ProjectSettings", "e " .. settings_file, {})
 
+-- save session prior to leaving vim
 vim.api.nvim_create_autocmd("VimLeavePre", {
   group = vim.api.nvim_create_augroup("user_session", { clear = true }),
   callback = function()
     if vim.g.session_loaded == false or vim.fn.filereadable(session_file) == 0 then
       return
     end
-    vim.ui.input({ prompt = "Update session? [Y/n] " }, function(input)
-      if input:lower() ~= "n" and input:lower() ~= "no" then
-        vim.cmd("Mksession")
-      end
-    end)
+    local choice = true
+    if confirm_update_session == true then
+      vim.ui.input({ prompt = "Update session? [Y/n] " }, function(input)
+        if input:lower() == "n" and input:lower() == "no" then
+          choice = false
+        end
+      end)
+    end
+    if choice == true then
+      vim.cmd("Mksession")
+    end
   end,
 })
 
@@ -42,11 +50,11 @@ local function load_session()
   if vim.fn.filereadable(session_file) == 0 then
     return
   end
-  local choice = false
-  if vim.g.confirm_load_session == true then
+  local choice = true
+  if confirm_load_session == true then
     vim.ui.input({ prompt = "Previous session found. Load session? [Y/n] " }, function(input)
-      if input:lower() ~= "n" and input:lower() ~= "no" then
-        choice = true
+      if input:lower() == "n" or input:lower() == "no" then
+        choice = false
       end
     end)
   end

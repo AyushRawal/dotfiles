@@ -124,9 +124,3 @@ autocmd("BufWritePre", {
 --     vim.api.nvim_buf_delete(event.buf, { force = true })
 --   end,
 -- })
-
--- autocmd("LspProgress", {
---   group = augroup("lsp_progress"),
---   -- callback = require("lualine").refresh
---   callback = function() print(vim.lsp.status()) end
--- })
