@@ -1,21 +1,15 @@
-local function augroup(name)
-  return vim.api.nvim_create_augroup("user_" .. name, { clear = true })
-end
+local function augroup(name) return vim.api.nvim_create_augroup("user_" .. name, { clear = true }) end
 local autocmd = vim.api.nvim_create_autocmd
 
 -- turn off relative numbers in insert mode
 local group = augroup("no_rno_ins")
 autocmd("InsertEnter", {
-  callback = function()
-    vim.opt.relativenumber = false
-  end,
+  callback = function() vim.opt.relativenumber = false end,
   group = group,
 })
 autocmd("InsertLeave", {
   callback = function()
-    if vim.o.number == true then
-      vim.opt.relativenumber = true
-    end
+    if vim.o.number == true then vim.opt.relativenumber = true end
   end,
   group = group,
 })
@@ -25,22 +19,18 @@ group = augroup("term_start_ins")
 autocmd("TermOpen", {
   pattern = "*",
   command = "startinsert",
-  group = group
+  group = group,
 })
 autocmd({ "BufWinEnter", "WinEnter" }, {
   group = group,
   callback = function(info)
-    if vim.bo[info.buf].ft == "term" then
-      vim.cmd.startinsert()
-    end
-  end
+    if vim.bo[info.buf].ft == "terminal" then vim.cmd.startinsert() end
+  end,
 })
 
 -- add formatoptiona
 autocmd("BufWinEnter", {
-  callback = function()
-    vim.opt.formatoptions:remove({ "c", "r", "o" })
-  end,
+  callback = function() vim.opt.formatoptions:remove({ "c", "r", "o" }) end,
   group = augroup("formatopts"),
 })
 
@@ -54,13 +44,6 @@ autocmd("TextYankPost", {
   end,
   group = augroup("highlight_yank"),
 })
-
--- clear highlights
--- vim.on_key(function(char)
---   if vim.fn.mode() == "n" then
---     vim.opt.hlsearch = vim.tbl_contains({ "<CR>", "n", "N", "*", "#", "?", "/" }, vim.fn.keytrans(char))
---   end
--- end, vim.api.nvim_create_namespace("auto_hlsearch"))
 
 -- remove trailing whitespaces before writing
 autocmd("BufWritePre", {
@@ -76,15 +59,11 @@ autocmd("BufWritePre", {
 -- show cursor line only in active window
 group = augroup("cursorline_on_focus")
 autocmd("WinEnter", {
-  callback = function()
-    vim.wo.cursorline = true
-  end,
+  callback = function() vim.wo.cursorline = true end,
   group = group,
 })
 autocmd("WinLeave", {
-  callback = function()
-    vim.wo.cursorline = false
-  end,
+  callback = function() vim.wo.cursorline = false end,
   group = group,
 })
 
@@ -109,18 +88,14 @@ autocmd("FileType", {
 autocmd("BufWritePre", {
   group = augroup("auto_create_dir"),
   callback = function(event)
-    if event.match:match("^%w%w+://") then
-      return
-    end
+    if event.match:match("^%w%w+://") then return end
     local file = vim.loop.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
 
 -- do not display process exited msg on terminal close
--- autocmd("TermClose", {
---   group = augroup("term_close"),
---   callback = function(event)
---     vim.api.nvim_buf_delete(event.buf, { force = true })
---   end,
--- })
+autocmd("TermClose", {
+  group = augroup("term_close"),
+  callback = function(event) vim.api.nvim_buf_delete(event.buf, { force = true }) end,
+})

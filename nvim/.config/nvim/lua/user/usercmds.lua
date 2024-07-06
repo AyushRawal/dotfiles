@@ -13,21 +13,16 @@ end, {
   desc = "set cwd to root dir",
 })
 
-usercmd("ProjectRoot", function()
-  vim.print(require("user.root").get())
-end, {
+usercmd("ProjectRoot", function() vim.print(require("user.root").get()) end, {
   desc = "print root dir",
 })
 
 usercmd("Terminals", function()
   local res = ""
   for k, v in pairs(require("user.terminal").terminals) do
-    local buf_name = vim.api.nvim_buf_get_name(v.buf)
-    res = res .. k .. ": " .. buf_name .. "\n"
+    if vim.api.nvim_buf_is_valid(v.buf) then res = res .. k .. ": " .. vim.api.nvim_buf_get_name(v.buf) .. "\n" end
   end
   vim.print(res)
 end, { desc = "list terminals" })
 
-usercmd("CPmode", function()
-  require("user.mappings").cp()
-end, { desc = "setup for cp" })
+usercmd("CPmode", function() require("user.mappings").cp() end, { desc = "setup for cp" })

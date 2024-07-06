@@ -25,9 +25,7 @@ return {
           -- local is_floating = win_conf.relative ~= "" or win_conf.external
           local is_floating = (vim.fn.win_gettype(term_win) == "popup")
           if is_blocking or is_floating then
-            if vim.api.nvim_win_is_valid(term_win) then
-              vim.api.nvim_win_hide(term_win)
-            end
+            if vim.api.nvim_win_is_valid(term_win) then vim.api.nvim_win_hide(term_win) end
           else
             vim.api.nvim_set_current_win(winnr)
           end

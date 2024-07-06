@@ -1,7 +1,5 @@
 local mappings = require("user.mappings")
-local cmp_set_hl = function()
-  vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
-end
+local cmp_set_hl = function() vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true }) end
 return {
   {
     "hrsh7th/nvim-cmp",
@@ -15,7 +13,7 @@ return {
       "hrsh7th/cmp-nvim-lsp-signature-help",
       "saadparwaiz1/cmp_luasnip",
     },
-    config = function()
+    opts = function()
       cmp_set_hl()
       vim.api.nvim_create_autocmd("ColorScheme", {
         callback = cmp_set_hl,
@@ -23,10 +21,8 @@ return {
       })
       local cmp = require("cmp")
       local kind_icons = require("user.utils").kind_icons
-      ---@diagnostic disable-next-line:missing-fields
-      cmp.setup({
+      return {
         snippet = {
-          -- REQUIRED - you must specify a snippet engine
           expand = function(args)
             require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
           end,
@@ -44,7 +40,6 @@ return {
           { name = "buffer" },
           { name = "path" },
         }),
-        ---@diagnostic disable-next-line:missing-fields
         formatting = {
           format = function(_, vim_item)
             vim_item.kind = string.format("   %s%s", kind_icons[vim_item.kind], vim_item.kind)
@@ -56,8 +51,11 @@ return {
             return vim_item
           end,
         },
-      })
-      ---@diagnostic disable-next-line:missing-fields
+      }
+    end,
+    config = function(_, opts)
+      local cmp = require("cmp")
+      cmp.setup(opts)
       cmp.setup.cmdline({ "/", "?" }, {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
@@ -72,8 +70,6 @@ return {
           end,
         },
       })
-
-      ---@diagnostic disable-next-line:missing-fields
       cmp.setup.cmdline(":", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
@@ -97,9 +93,7 @@ return {
     event = "InsertEnter",
     dependencies = {
       "rafamadriz/friendly-snippets",
-      config = function()
-        require("luasnip.loaders.from_vscode").lazy_load()
-      end,
+      config = function() require("luasnip.loaders.from_vscode").lazy_load() end,
     },
     config = function()
       -- latex snippets in markdown math blocks

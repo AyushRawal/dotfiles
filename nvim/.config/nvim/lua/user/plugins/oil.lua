@@ -5,9 +5,7 @@ local type_hlgroups = setmetatable({
   ["l"] = "OilTypeLink",
   ["s"] = "OilTypeSocket",
 }, {
-  __index = function()
-    return "OilTypeFile"
-  end,
+  __index = function() return "OilTypeFile" end,
 })
 local permission_hlgroups = setmetatable({
   ["-"] = "OilPermissionNone",
@@ -15,15 +13,11 @@ local permission_hlgroups = setmetatable({
   ["w"] = "OilPermissionWrite",
   ["x"] = "OilPermissionExecute",
 }, {
-  __index = function()
-    return "OilDir"
-  end,
+  __index = function() return "OilDir" end,
 })
 
 local function oil_sethl()
-  local gethl = function(name)
-    return vim.api.nvim_get_hl(0, { name = name, link = false })
-  end
+  local gethl = function(name) return vim.api.nvim_get_hl(0, { name = name, link = false }) end
   local sethl = function(name, to, opts)
     opts = vim.tbl_deep_extend("force", {
       fg = gethl(to)["fg"],
@@ -80,9 +74,7 @@ return {
           link = "l",
           socket = "s",
         },
-        highlight = function(type_str)
-          return type_hlgroups[type_str]
-        end,
+        highlight = function(type_str) return type_hlgroups[type_str] end,
       },
       {
         "permissions",
@@ -165,14 +157,10 @@ return {
       show_hidden = true,
       -- This function defines what is considered a "hidden" file
       ---@diagnostic disable-next-line:unused-local
-      is_hidden_file = function(name, bufnr)
-        return vim.startswith(name, ".")
-      end,
+      is_hidden_file = function(name, bufnr) return vim.startswith(name, ".") end,
       -- This function defines what will never be shown, even when `show_hidden` is set
       ---@diagnostic disable-next-line:unused-local
-      is_always_hidden = function(name, bufnr)
-        return name == ".."
-      end,
+      is_always_hidden = function(name, bufnr) return name == ".." end,
       sort = {
         -- sort order can be "asc" or "desc"
         -- see :help oil-columns to see which columns are sortable
@@ -192,9 +180,7 @@ return {
       },
       -- This is the config that will be passed to nvim_open_win.
       -- Change values here to customize the layout
-      override = function(conf)
-        return conf
-      end,
+      override = function(conf) return conf end,
     },
     -- Configuration for the actions floating preview window
     preview = {

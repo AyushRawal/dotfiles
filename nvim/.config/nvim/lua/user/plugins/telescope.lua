@@ -6,15 +6,17 @@ return {
     {
       "nvim-telescope/telescope-fzf-native.nvim",
       build = "make",
-      config = require("user.utils").on_plugin_load("telescope.nvim", function()
-        require("telescope").load_extension("fzf")
-      end),
+      config = require("user.utils").on_plugin_load(
+        "telescope.nvim",
+        function() require("telescope").load_extension("fzf") end
+      ),
     },
     {
       "nvim-telescope/telescope-ui-select.nvim",
-      config = require("user.utils").on_plugin_load("telescope.nvim", function()
-        require("telescope").load_extension("ui-select")
-      end),
+      config = require("user.utils").on_plugin_load(
+        "telescope.nvim",
+        function() require("telescope").load_extension("ui-select") end
+      ),
     },
   },
   keys = require("user.mappings").telescope,
@@ -71,8 +73,8 @@ return {
         },
       },
       extensions = {
-        ["ui-select"] = require("telescope.themes").get_dropdown()
-      }
+        ["ui-select"] = require("telescope.themes").get_dropdown(),
+      },
     })
   end,
 }

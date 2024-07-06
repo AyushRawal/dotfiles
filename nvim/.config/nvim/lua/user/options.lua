@@ -59,8 +59,8 @@ end
 vim.opt.foldtext = "v:lua.FoldText()"
 
 opt.fillchars = {
-  eob = " ",  --> remove ~ under line numbers
-  fold = "·"  --> foldtext fill char
+  eob = " ", --> remove ~ under line numbers
+  fold = "·", --> foldtext fill char
 }
 
 opt.timeoutlen = 600 --> time to wait for a mapped sequence to complete
@@ -134,9 +134,7 @@ vim.diagnostic.config({
     source = false,
     prefix = function(diagnostic, _, _)
       for severity, i in pairs(require("user.utils").diagnostics_icons) do
-        if diagnostic.severity == vim.diagnostic.severity[severity:upper()] then
-          return i
-        end
+        if diagnostic.severity == vim.diagnostic.severity[severity:upper()] then return i end
       end
       return ""
     end,

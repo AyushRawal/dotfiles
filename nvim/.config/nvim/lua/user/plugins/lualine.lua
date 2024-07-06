@@ -1,13 +1,11 @@
 local diff_source = function()
   ---@diagnostic disable-next-line:undefined-field
   local gs = vim.b.gitsigns_status_dict
-  if gs then
-    return {
-      added = gs.added,
-      modified = gs.changed,
-      removed = gs.removed,
-    }
-  end
+  if gs then return {
+    added = gs.added,
+    modified = gs.changed,
+    removed = gs.removed,
+  } end
 end
 
 local diagnostics_icons = require("user.utils").diagnostics_icons
@@ -25,7 +23,7 @@ return {
       section_separators = { left = "", right = "" },
       disabled_filetypes = {
         statusline = {},
-        winbar = { "neo-tree", "packer", "qf", "help", "term" },
+        winbar = { "neo-tree", "packer", "qf", "help", "terminal" },
       },
       ignore_focus = { "neo-tree" },
       always_divide_middle = true,
@@ -39,26 +37,20 @@ return {
     sections = {
       lualine_a = {
         {
-          function()
-            return " "
-          end,
+          function() return " " end,
           padding = { left = 0, right = 0 },
         },
       },
       lualine_b = {},
       lualine_c = {
         {
-          function()
-            return vim.bo.filetype
-          end,
+          function() return vim.bo.filetype end,
           color = function()
             local buf = vim.api.nvim_get_current_buf()
             local ts = vim.treesitter.highlighter.active[buf]
             return { fg = ts and not vim.tbl_isempty(ts) and "#a89984" or "#ea6962" }
           end,
-          cond = function()
-            return vim.bo.filetype ~= ""
-          end,
+          cond = function() return vim.bo.filetype ~= "" end,
         },
         {
           "b:gitsigns_head",
@@ -69,18 +61,14 @@ return {
           source = diff_source,
         },
         {
-          function()
-            return "%="
-          end,
+          function() return "%=" end,
         },
         {
           "filetype",
           icon_only = true,
         },
         {
-          function()
-            return require("user.root").pretty_path()
-          end,
+          function() return require("user.root").pretty_path() end,
           padding = { left = 0, right = 1 },
         },
       },
@@ -108,9 +96,7 @@ return {
         },
         {
           function()
-            if vim.api.nvim_buf_get_option(0, "expandtab") then
-              return "Space:" .. vim.o.shiftwidth
-            end
+            if vim.api.nvim_buf_get_option(0, "expandtab") then return "Space:" .. vim.o.shiftwidth end
             return "Tab:" .. vim.o.tabstop
           end,
           color = { fg = "#a89984" },
@@ -128,9 +114,7 @@ return {
       lualine_y = {},
       lualine_z = {
         {
-          function()
-            return " "
-          end,
+          function() return " " end,
           padding = { left = 0, right = 0 },
         },
       },
@@ -142,9 +126,7 @@ return {
           "buffers",
           mode = 4,
           show_filename_only = false,
-          max_length = function()
-            return vim.o.columns
-          end,
+          max_length = function() return vim.o.columns end,
         },
       },
       lualine_y = {
@@ -155,9 +137,7 @@ return {
       lualine_c = {
         {
           function()
-            if not package.loaded["nvim-navic"] then
-              return ""
-            end
+            if not package.loaded["nvim-navic"] then return "" end
             if require("nvim-navic").is_available() then
               return require("nvim-navic").get_location()
             else
@@ -169,21 +149,15 @@ return {
       lualine_x = {
         {
           function()
-            if not package.loaded["lint"] then
-              return ""
-            end
+            if not package.loaded["lint"] then return "" end
             local linters = require("lint").linters_by_ft[vim.bo.filetype]
             ---@diagnostic disable-next-line:param-type-mismatch
-            if next(linters) == nil then
-              return ""
-            end
+            if next(linters) == nil then return "" end
             local s = " "
             ---@diagnostic disable-next-line:param-type-mismatch
             for i, linter in ipairs(linters) do
               s = s .. linter
-              if i ~= #linters then
-                s = s .. ", "
-              end
+              if i ~= #linters then s = s .. ", " end
             end
             return s
           end,
@@ -191,21 +165,15 @@ return {
         },
         {
           function()
-            if not package.loaded["conform"] then
-              return ""
-            end
+            if not package.loaded["conform"] then return "" end
             local formatters = require("conform").formatters_by_ft[vim.bo.filetype]
             ---@diagnostic disable-next-line:param-type-mismatch
-            if next(formatters) == nil then
-              return ""
-            end
+            if next(formatters) == nil then return "" end
             local s = "  "
             ---@diagnostic disable-next-line:param-type-mismatch
             for i, formatter in ipairs(formatters) do
               s = s .. formatter
-              if i ~= #formatters then
-                s = s .. ", "
-              end
+              if i ~= #formatters then s = s .. ", " end
             end
             return s
           end,
@@ -227,24 +195,18 @@ return {
               return string.format(" (venv) %s", venv_name)
             end
           end,
-          cond = function()
-            return vim.bo.filetype == "python"
-          end,
+          cond = function() return vim.bo.filetype == "python" end,
           color = { fg = "#7daea3" },
         },
         {
           function()
             local clients = vim.lsp.get_clients({ bufnr = 0 })
-            if next(clients) == nil then
-              return ""
-            end
+            if next(clients) == nil then return "" end
             local s = "  LSP ~ "
             -- local s = "~ "
             for i, client in ipairs(clients) do
               s = s .. client.name
-              if i ~= #clients then
-                s = s .. " | "
-              end
+              if i ~= #clients then s = s .. " | " end
             end
             return s
           end,
@@ -254,9 +216,7 @@ return {
     inactive_winbar = {
       lualine_a = {
         {
-          function()
-            return require("user.root").pretty_path()
-          end,
+          function() return require("user.root").pretty_path() end,
         },
       },
       lualine_b = { "diff" },

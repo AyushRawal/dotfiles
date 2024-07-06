@@ -10,9 +10,9 @@ return {
       {
         "nvim-treesitter/nvim-treesitter-textobjects",
         config = function()
+          --> credits to `folke/LazyVim` for this <--
           -- When in diff mode, we want to use the default
           -- vim text objects c & C instead of the treesitter ones.
-          -- (from LazyVim)
           local move = require("nvim-treesitter.textobjects.move") ---@type table<string,fun(...)>
           local configs = require("nvim-treesitter.configs")
           for name, fn in pairs(move) do
@@ -82,7 +82,7 @@ return {
           -- and should return true of false
           -- include_surrounding_whitespace = true,
         },
-        move = require("user.utils").spread(mappings.treesitter.textobjects.move)({
+        move = vim.tbl_extend("force", mappings.treesitter.textobjects.move, {
           enable = true,
           set_jumps = true, -- whether to set jumps in the jumplist
         }),
@@ -100,6 +100,10 @@ return {
     opts = {
       enable_autocmd = false,
     },
+    config = function(_, opts)
+      vim.g.skip_ts_context_commentstring_module = true
+      require("ts_context_commentstring").setup(opts)
+    end,
   },
   {
     "numToStr/Comment.nvim",

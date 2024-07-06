@@ -60,21 +60,34 @@ M.main = function()
   map("n", "[l", "<CMD>lprev<CR>", { desc = "previous entry in loclist" })
   map("n", "<A-l>", "<CMD>lclose<CR>", { desc = "close location list" })
 
-  -- stylua: ignore start
   -- save me
   map("n", "<CR>", function()
-    if vim.o.modifiable then return "ciw" end          --> change word under cursor normally
+    if vim.o.modifiable then return "ciw" end --> change word under cursor normally
     if vim.o.buftype == "help" then return "<C-]>" end --> follow tags in help windows
-    return "<CR>"                                      --> keep enter in other non-modifiable windows such as quickfix etc.
+    return "<CR>" --> keep enter in other non-modifiable windows such as quickfix etc.
   end, { desc = "ciw / follow help tags / default", expr = true })
-  -- stylua: ignore end
 
   map("n", "<leader>w", "<CMD>w<CR>", { desc = "save file" })
 
   -- terminal config
-  map("n", "<leader>tt", require("user.terminal").float, { desc = "terminal in float" })
-  map("n", "<leader>tv", require("user.terminal").split_vert, { desc = "terminal in vertical split" })
-  map("n", "<leader>ts", require("user.terminal").split_horz, { desc = "terminal in horizontal split" })
+  map(
+    "n",
+    "<leader>tt",
+    function() require("user.terminal").toggle({ type = "float" }) end,
+    { desc = "terminal in float" }
+  )
+  map(
+    "n",
+    "<leader>tv",
+    function() require("user.terminal").toggle({ type = "vsplit" }) end,
+    { desc = "terminal in vertical split" }
+  )
+  map(
+    "n",
+    "<leader>ts",
+    function() require("user.terminal").toggle({ type = "split" }) end,
+    { desc = "terminal in horizontal split" }
+  )
   map("n", "<leader>tf", require("user.terminal").find_term, { desc = "find terminal" })
 
   -- escape terminal mode
@@ -100,28 +113,44 @@ M.main = function()
   map("i", "<F3>", "<C-R>=strftime('%Y-%m-%d')<CR>") --> print date at cursor
   map("i", "<F4>", "<C-R>=strftime('%H:%M')<CR>") --> print time at cursor
 
-  map("n", "<leader>li", "<CMD>LspInfo<CR>", { desc = "lsp info" })
+  map("n", "<leader>lI", "<CMD>LspInfo<CR>", { desc = "lsp info" })
 
   -- diagnostics
   map("n", "gl", vim.diagnostic.open_float, { desc = "current line diagnostics" })
   map("n", "<leader>db", vim.diagnostic.setloclist, { desc = "set location list (buffer diagnostics)" })
   map("n", "<leader>da", vim.diagnostic.setqflist, { desc = "set quickfix list (all diagnostics)" })
 
-  map("n", "<leader>gg", function()
-    require("user.terminal").float("lazygit")
-  end, { desc = "launch lazygit" })
+  map(
+    "n",
+    "<leader>gg",
+    function() require("user.terminal").toggle({ type = "float", cmd = "lazygit" }) end,
+    { desc = "launch lazygit" }
+  )
 
-  map("n", "<leader>bb", "<CMD>b#<CR>", { desc = "pick buffer" })
+  map("n", "<leader>bb", "<CMD>b#<CR>", { desc = "alternate buffer" })
   map("n", "]b", "<CMD>bnext<CR>", { desc = "next buffer" })
   map("n", "[b", "<CMD>bprevious<CR>", { desc = "previous buffer" })
 end
 
+---@type CommentingConfig
+M.comment = {
+  above_linewise = "gcO",
+  below_linewise = "gco",
+  eol_linewise = "gcA",
+  blockwise = "gb",
+  current_blockwise = "gbc",
+  above_blockwise = "gbO",
+  below_blockwise = "gbo",
+  eol_blockwise = "gbA",
+}
+
 -- competitive programming setup
 M.cp = function()
-  map("n", "<A-y>", "<CMD>!wl-paste > input.txt<CR>")
+  map("n", "<A-p>", "<CMD>!wl-paste > input.txt<CR>")
+  map("n", "<A-y>", "<CMD>%y+<CR>")
   map("n", "<F5>", "<CMD>!runcpp %<CR>")
   map("n", "<A-n>", function()
-    vim.ui.input({prompt = "Name: "}, function(input)
+    vim.ui.input({ prompt = "Name: " }, function(input)
       vim.cmd("!ch " .. input)
       vim.cmd("e " .. input .. ".cpp")
     end)
@@ -131,9 +160,7 @@ end
 M.mini_bufremove = {
   {
     "<leader>q",
-    function()
-      require("mini.bufremove").delete()
-    end,
+    function() require("mini.bufremove").delete() end,
     desc = "delete buffer (preserve window)",
   },
 }
@@ -141,9 +168,7 @@ M.mini_bufremove = {
 M.conform = {
   {
     "gq",
-    function()
-      require("conform").format({ lsp_fallback = true })
-    end,
+    function() require("conform").format({ lsp_fallback = true }) end,
     mode = { "n", "x" },
     desc = "format buffer / range",
   },
@@ -154,7 +179,9 @@ M.oil = {
   {
     "<leader>E",
     function()
-      require("oil").open(require("user.root").get())
+      local root = require("user.root").get()
+      assert(type(root) == "string")
+      require("oil").open(root)
     end,
     desc = "toggle oil (root dir)",
   },
@@ -169,53 +196,24 @@ M.cmp = function()
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
     ["<C-Space>"] = cmp.mapping.complete(),
     ["<C-e>"] = cmp.mapping.abort(),
-
     -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     ["<CR>"] = cmp.mapping.confirm({ select = false }),
-    ["<C-y>"] = cmp.mapping.confirm({ select = false }),
-
-    -- ["<Tab>"] = cmp.mapping(function(fallback)
-    --   if cmp.visible() then
-    --     cmp.select_next_item()
-    -- elseif luasnip.expand_or_jumpable() then
-    --   luasnip.expand_or_jump()
-    -- elseif has_words_before() then
-    --   cmp.complete()
-    --   else
-    --     fallback()
-    --   end
-    -- end, { "i", "s" }),
-    --
-    -- ["<S-Tab>"] = cmp.mapping(function(fallback)
-    --   if cmp.visible() then
-    --     cmp.select_prev_item()
-    -- elseif luasnip.jumpable(-1) then
-    --   luasnip.jump(-1)
-    --   else
-    --     fallback()
-    --   end
-    -- end, { "i", "s" }),
+    ["<C-y>"] = cmp.mapping.confirm({ select = true }),
   }
 end
 
 M.luasnip = function()
   local luasnip = require("luasnip")
   map({ "i", "s" }, "<C-k>", function()
-    if luasnip.expand_or_jumpable() then
-      luasnip.expand_or_jump()
-    end
+    if luasnip.expand_or_jumpable() then luasnip.expand_or_jump() end
   end)
 
   map({ "i", "s" }, "<C-j>", function()
-    if luasnip.jumpable(-1) then
-      luasnip.jump(-1)
-    end
+    if luasnip.jumpable(-1) then luasnip.jump(-1) end
   end)
 
   map("i", "<C-;>", function()
-    if luasnip.choice_active() then
-      luasnip.change_choice(1)
-    end
+    if luasnip.choice_active() then luasnip.change_choice(1) end
   end)
 end
 
@@ -231,17 +229,26 @@ M.lsp = function(bufnr)
   buf_map("n", "<leader>lr", vim.lsp.buf.rename, { desc = "rename object" })
   buf_map("n", "<leader>la", vim.lsp.buf.code_action, { desc = "code action" })
   buf_map("n", "<leader>lc", vim.lsp.codelens.run, { desc = "codelens run" })
-  buf_map("n", "<leader>li", function()
-    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
-  end, { desc = "toggle inlay hints" })
-  buf_map({ "n", "x" }, "<leader>lf", function()
-    vim.lsp.buf.format({ async = true })
-  end, { desc = "lsp format buffer / range" })
+  buf_map(
+    "n",
+    "<leader>li",
+    function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({})) end,
+    { desc = "toggle inlay hints" }
+  )
+  buf_map(
+    { "n", "x" },
+    "<leader>lf",
+    function() vim.lsp.buf.format({ async = true }) end,
+    { desc = "lsp format buffer / range" }
+  )
   buf_map("n", "<leader>lwa", vim.lsp.buf.add_workspace_folder, { desc = "add workspcae folder" })
   buf_map("n", "<leader>lwr", vim.lsp.buf.remove_workspace_folder, { desc = "remove workspace folder" })
-  buf_map("n", "<leader>lwl", function()
-    vim.print(vim.lsp.buf.list_workspace_folders())
-  end, { desc = "list workspace folders" })
+  buf_map(
+    "n",
+    "<leader>lwl",
+    function() vim.print(vim.lsp.buf.list_workspace_folders()) end,
+    { desc = "list workspace folders" }
+  )
 
   local telescope_available, _ = pcall(require, "telescope")
   if not telescope_available then
@@ -259,16 +266,12 @@ M.telescope = {
   { "<leader>fG", "<CMD>Telescope live_grep<CR>", desc = "grep (cwd)" },
   {
     "<leader>ff",
-    function()
-      require("telescope.builtin").find_files({ cwd = require("user.root").get() })
-    end,
+    function() require("telescope.builtin").find_files({ cwd = require("user.root").get() }) end,
     desc = "find files (root dir)",
   },
   {
     "<leader>fg",
-    function()
-      require("telescope.builtin").live_grep({ cwd = require("user.root").get() })
-    end,
+    function() require("telescope.builtin").live_grep({ cwd = require("user.root").get() }) end,
     desc = "grep (root dir)",
   },
   { "<leader>fh", "<CMD>Telescope oldfiles<CR>", desc = "find recent files" },
@@ -288,8 +291,8 @@ M.telescope = {
 }
 
 M.treesitter = {
-  incremental_selection = {
-    init_selection = "<A-o>", -- set to `false` to disable one of the mappings
+  incremental_selection = { -- set to `false` to disable one of the mappings
+    init_selection = "<A-o>",
     node_incremental = "<A-o>",
     scope_incremental = false,
     node_decremental = "<A-i>",
@@ -342,22 +345,14 @@ M.gitsigns = function(bufnr)
   end
 
   buf_map("n", "]g", function()
-    if vim.wo.diff then
-      return "]g"
-    end
-    vim.schedule(function()
-      gs.next_hunk()
-    end)
+    if vim.wo.diff then return "]g" end
+    vim.schedule(function() gs.next_hunk() end)
     return "<Ignore>"
   end, { expr = true, desc = "next hunk" })
 
   buf_map("n", "[g", function()
-    if vim.wo.diff then
-      return "[g"
-    end
-    vim.schedule(function()
-      gs.prev_hunk()
-    end)
+    if vim.wo.diff then return "[g" end
+    vim.schedule(function() gs.prev_hunk() end)
     return "<Ignore>"
   end, { expr = true, desc = "previous hunk" })
 
@@ -367,48 +362,49 @@ M.gitsigns = function(bufnr)
   buf_map("n", "<leader>gR", gs.reset_buffer, { desc = "reset buffer" })
   buf_map("n", "<leader>gu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
   buf_map("n", "<leader>gp", gs.preview_hunk, { desc = "preview hunk" })
-  buf_map("n", "<leader>gB", function()
-    gs.blame_line({ full = true })
-  end, { desc = "blame line" })
+  buf_map("n", "<leader>gB", function() gs.blame_line({ full = true }) end, { desc = "blame line" })
   buf_map("n", "<leader>gtb", gs.toggle_current_line_blame, { desc = "toggle current line blame" })
   buf_map("n", "<leader>gd", gs.diffthis, { desc = "show buffer diff" })
   -- buf_map("n", "<leader>gD", function() gs.diffthis('~') end) --> diff with parent of head
   buf_map("n", "<leader>gtd", gs.toggle_deleted, { desc = "toggle deleted lines" })
   buf_map("n", "<leader>gtl", gs.toggle_linehl, { desc = "toggle line highlight" })
   buf_map("n", "<leader>gl", gs.setloclist, { desc = "set location list with current buffer hunks" })
-  buf_map("n", "<leader>gq", function()
-    gs.setqflist({ target = "all" })
-  end, { desc = "set qf list with hunks from all buffers" })
+  buf_map(
+    "n",
+    "<leader>gq",
+    function() gs.setqflist({ target = "all" }) end,
+    { desc = "set qf list with hunks from all buffers" }
+  )
 
   -- text object
   buf_map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
 end
 
-M.comment = {
-  ---LHS of toggle mappings in NORMAL mode
-  toggler = {
-    ---Line-comment toggle keymap
-    line = "gcc",
-    ---Block-comment toggle keymap
-    block = "gbc",
-  },
-  ---LHS of operator-pending mappings in NORMAL and VISUAL mode
-  opleader = {
-    ---Line-comment keymap
-    line = "gc",
-    ---Block-comment keymap
-    block = "gb",
-  },
-  ---LHS of extra mappings
-  extra = {
-    ---Add comment on the line above
-    above = "gcO",
-    ---Add comment on the line below
-    below = "gco",
-    ---Add comment at the end of line
-    eol = "gcA",
-  },
-}
+-- M.comment = {
+--   ---LHS of toggle mappings in NORMAL mode
+--   toggler = {
+--     ---Line-comment toggle keymap
+--     line = "gcc",
+--     ---Block-comment toggle keymap
+--     block = "gbc",
+--   },
+--   ---LHS of operator-pending mappings in NORMAL and VISUAL mode
+--   opleader = {
+--     ---Line-comment keymap
+--     line = "gc",
+--     ---Block-comment keymap
+--     block = "gb",
+--   },
+--   ---LHS of extra mappings
+--   extra = {
+--     ---Add comment on the line above
+--     above = "gcO",
+--     ---Add comment on the line below
+--     below = "gco",
+--     ---Add comment at the end of line
+--     eol = "gcA",
+--   },
+-- }
 
 M.obsidian = {
   { "<leader>nn", ":ObsidianNew ", desc = "new note" },
@@ -424,9 +420,7 @@ M.obsidian = {
 M.nabla = {
   {
     "<leader>nl",
-    function()
-      require("nabla").toggle_virt({ autogen = true })
-    end,
+    function() require("nabla").toggle_virt({ autogen = true }) end,
     desc = "Toggle latex preview",
   },
 }

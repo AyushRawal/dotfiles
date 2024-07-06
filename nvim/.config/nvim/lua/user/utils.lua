@@ -48,36 +48,25 @@ M.diagnostics_icons = {
   Info = "",
 }
 
+---@param on_attach fun(client: vim.lsp.Client, bufnr: buffer)
 M.on_lsp_attach = function(on_attach)
   vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
-      local buffer = args.buf ---@type number
+      local buffer = args.buf
       local client = vim.lsp.get_client_by_id(args.data.client_id)
+      if not client then return end
       on_attach(client, buffer)
     end,
   })
 end
 
-M.spread = function(template)
-  return function(table)
-    local result = {}
-    for key, value in pairs(template) do
-      result[key] = value
-    end
-    for key, value in pairs(table) do
-      result[key] = value
-    end
-    return result
-  end
-end
-
+--- @param name string
+--- @param fn function
 M.on_plugin_load = function(name, fn)
   vim.api.nvim_create_autocmd("User", {
     pattern = "LazyLoad",
     callback = function(event)
-      if event.data == name then
-        fn(name)
-      end
+      if event.data == name then fn() end
     end,
   })
 end

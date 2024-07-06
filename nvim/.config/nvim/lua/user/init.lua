@@ -1,6 +1,4 @@
-if vim.loader then
-  vim.loader.enable()
-end
+if vim.loader then vim.loader.enable() end
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
@@ -27,8 +25,10 @@ require("lazy").setup({ { import = "user.plugins" } }, {
     path = "~/code/opensource",
   },
 })
+require("user.lsp")
 require("user.usercmds")
 require("user.autocmds")
 require("user.mappings").main()
 require("user.project")
 require("user.lsp_progress").start()
+require("user.comment").setup(require("user.mappings").comment)

@@ -18,9 +18,7 @@ return {
     },
     config = function(opts)
       require("nvim-surround").setup(opts)
-      local function surround_set_hl()
-        vim.api.nvim_set_hl(0, "NvimSurroundHighlight", { link = "@text.warning" })
-      end
+      local function surround_set_hl() vim.api.nvim_set_hl(0, "NvimSurroundHighlight", { link = "@text.warning" }) end
       surround_set_hl()
       vim.api.nvim_create_autocmd("ColorScheme", {
         callback = surround_set_hl,
@@ -58,9 +56,7 @@ return {
       })
       local function indent_set_hl()
         local indent_hl = vim.api.nvim_get_hl(0, { name = "IndentLine" })
-        if vim.tbl_isempty(indent_hl) then
-          indent_hl = vim.api.nvim_get_hl(0, { name = "IblIndent" })
-        end
+        if vim.tbl_isempty(indent_hl) then indent_hl = vim.api.nvim_get_hl(0, { name = "IblIndent" }) end
         if vim.tbl_isempty(indent_hl) then
           print("hi")
           indent_hl = vim.api.nvim_get_hl(0, { name = "Whitespace" })
@@ -69,12 +65,8 @@ return {
         vim.api.nvim_set_hl(0, "IndentLine", indent_hl)
 
         local scope_hl = vim.api.nvim_get_hl(0, { name = "IndentLineCurrent" })
-        if vim.tbl_isempty(scope_hl) then
-          scope_hl = vim.api.nvim_get_hl(0, { name = "IblScope" })
-        end
-        if vim.tbl_isempty(scope_hl) then
-          scope_hl = vim.api.nvim_get_hl(0, { name = "LineNr" })
-        end
+        if vim.tbl_isempty(scope_hl) then scope_hl = vim.api.nvim_get_hl(0, { name = "IblScope" }) end
+        if vim.tbl_isempty(scope_hl) then scope_hl = vim.api.nvim_get_hl(0, { name = "LineNr" }) end
         scope_hl.nocombine = true
         vim.api.nvim_set_hl(0, "IndentLineCurrent", scope_hl)
       end
@@ -137,9 +129,7 @@ return {
       }
       vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave", "BufEnter" }, {
         group = vim.api.nvim_create_augroup("user_lint", { clear = true }),
-        callback = function()
-          require("lint").try_lint()
-        end,
+        callback = function() require("lint").try_lint() end,
       })
     end,
   },
@@ -226,9 +216,7 @@ return {
           -- obsidian vault wiki links
           resolve_image_path = function(document_path, image_path, fallback)
             if vim.startswith(document_path, "/home/rawal/Notes") then
-              if not vim.startswith(image_path, "assets/") then
-                image_path = "assets/" .. image_path
-              end
+              if not vim.startswith(image_path, "assets/") then image_path = "assets/" .. image_path end
             end
             return fallback(document_path, image_path)
           end,

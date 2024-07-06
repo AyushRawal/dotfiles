@@ -46,9 +46,7 @@ return {
       callback = navic_sethl,
     })
     require("user.utils").on_lsp_attach(function(client, bufnr)
-      if client.supports_method("textDocument/documentSymbol") then
-        require("nvim-navic").attach(client, bufnr)
-      end
+      if client.supports_method("textDocument/documentSymbol") then require("nvim-navic").attach(client, bufnr) end
     end)
   end,
   opts = {

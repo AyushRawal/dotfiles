@@ -7,7 +7,7 @@ local gruvbox_custom = function()
     WarningFloat = "DiagnosticSignWarn",
     HintFloat = "DiagnosticSignHint",
     InfoFloat = "DiagnosticSignFloat",
-    DiagnosticSignOk = "AquaSign"
+    DiagnosticSignOk = "AquaSign",
   }
   for from, to in pairs(highlights) do
     vim.api.nvim_set_hl(0, from, { link = to })
@@ -34,7 +34,7 @@ return {
       bg4 = { "#303533", 237 },
       bg5 = { "#4d4542", 239 },
       bg_statusline1 = { "#252525", 235 },
-      bg_statusline3 = { "#4d4542", 239 }
+      bg_statusline3 = { "#4d4542", 239 },
     }
     local group = vim.api.nvim_create_augroup("user_gruvbox_custom", { clear = true })
     vim.api.nvim_create_autocmd(

@@ -1,104 +1,102 @@
 local M = {}
+
 M.terminals = {}
 
-local function size(max, value)
-  return value > 1 and math.min(value, max) or math.floor(max * value)
+local open_win = function(buf, type)
+  local win_opts = { style = "minimal" }
+  if type == "float" then
+    win_opts.relative = "editor"
+    win_opts.border = "single"
+    win_opts.zindex = 50
+    win_opts.width = math.floor(vim.o.columns * 0.8)
+    win_opts.height = math.floor(vim.o.lines * 0.8)
+    win_opts.row = math.floor((vim.o.lines - win_opts.height) / 2)
+    win_opts.col = math.floor((vim.o.columns - win_opts.width) / 2)
+  elseif type == "split" then
+    win_opts.height = math.floor(vim.o.lines * 0.25)
+    win_opts.split = "below"
+    win_opts.win = -1
+  elseif type == "vsplit" then
+    win_opts.width = math.floor(vim.o.columns * 0.3)
+    win_opts.split = "right"
+    win_opts.win = -1
+  end
+  local win = vim.api.nvim_open_win(buf, true, win_opts)
+  vim.wo[win].winfixbuf = true
+  return win
 end
 
-M.float = function(cmd, key)
-  key = key or cmd or vim.v.count or 0
-  local opts = { size = { height = 0.8, width = 0.8 } }
-  -- opts = vim.tbl_deep_extend("force", { size = { height = 0.8, width = 0.8 }}, opts or {})
-  cmd = cmd or vim.o.shell
+local get_win_type = function(win)
+  local win_opts = vim.api.nvim_win_get_config(win)
+  local type = "float"
+  if win_opts.split then
+    if win_opts.split == "below" or win_opts.split == "above" then type = "split" end
+    if win_opts.split == "left" or win_opts.split == "right" then type = "vsplit" end
+  end
+  return type
+end
 
-  local win_opts = {
-    relative = "editor",
-    style = "minimal",
-    border = "single",
-    zindex = 50,
-  }
-  win_opts.width = size(vim.o.columns, opts.size.width)
-  win_opts.height = size(vim.o.lines, opts.size.height)
-  win_opts.row = math.floor((vim.o.lines - win_opts.height) / 2)
-  win_opts.col = math.floor((vim.o.columns - win_opts.width) / 2)
-
-  if M.terminals[key] and vim.api.nvim_buf_is_valid(M.terminals[key].buf) then
-    if vim.api.nvim_win_is_valid(M.terminals[key].win) then
-      vim.api.nvim_win_hide(M.terminals[key].win)
+M.toggle = function(opts)
+  assert(opts and opts.type, "invalid arguments; type not specified")
+  assert(
+    opts.type == "float" or opts.type == "split" or opts.type == "vsplit",
+    "unknown window type " .. opts.type .. "; allowed window types: float, split and vsplit"
+  )
+  opts.key = opts.key or opts.cmd or vim.v.count or 0
+  opts.cmd = opts.cmd or vim.o.shell
+  local terminal = M.terminals[opts.key]
+  if terminal and not vim.api.nvim_buf_is_valid(terminal.buf) then
+    assert(not vim.api.nvim_win_is_valid(terminal.win))
+    terminal = nil
+    M.terminals[opts.key] = nil
+  end
+  if not terminal then
+    terminal = {}
+    terminal.buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_option(terminal.buf, "ft", "terminal")
+    vim.keymap.set("n", "q", "<CMD>close<CR>", { buffer = terminal.buf })
+  end
+  if terminal.win then
+    if vim.api.nvim_win_is_valid(terminal.win) then
+      local type = get_win_type(terminal.win)
+      vim.api.nvim_win_hide(terminal.win)
+      if opts.type ~= type then terminal.win = open_win(terminal.buf, opts.type) end
     else
-      local win = vim.api.nvim_open_win(M.terminals[key].buf, true, win_opts)
-      M.terminals[key] = { buf = M.terminals[key].buf, win = win }
-      -- vim.cmd.startinsert()
+      terminal.win = open_win(terminal.buf, opts.type)
     end
   else
-    local buf = vim.api.nvim_create_buf(false, true)
-    local win = vim.api.nvim_open_win(buf, true, win_opts)
-    vim.api.nvim_buf_set_option(buf, "ft", "term")
-    vim.fn.termopen(cmd, vim.empty_dict())
-    -- vim.keymap.set("n", "<ESC>", "<CMD>close<CR>", { buffer = buf })
-    vim.keymap.set("n", "q", "<CMD>close<CR>", { buffer = buf })
-    M.terminals[key] = { buf = buf, win = win }
+    terminal.win = open_win(terminal.buf, opts.type)
+    vim.fn.termopen(opts.cmd, vim.empty_dict())
   end
-end
-
-local split = function(split_cmd, key)
-  key = key or vim.v.count or 0
-  local win, buf
-  if M.terminals[key] and vim.api.nvim_buf_is_valid(M.terminals[key].buf) then
-    if vim.api.nvim_win_is_valid(M.terminals[key].win) then
-      vim.api.nvim_win_hide(M.terminals[key].win)
-    else
-      vim.cmd(split_cmd)
-      win = vim.api.nvim_get_current_win()
-      vim.api.nvim_win_set_buf(win, M.terminals[key].buf)
-      -- vim.cmd.startinsert()
-      M.terminals[key] = { buf = M.terminals[key].buf, win = win }
-    end
-  else
-    vim.cmd(split_cmd)
-    win = vim.api.nvim_get_current_win()
-    buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_option(buf, "ft", "term")
-    vim.api.nvim_win_set_option(win, "number", false)
-    vim.api.nvim_win_set_option(win, "relativenumber", false)
-    vim.api.nvim_win_set_option(win, "signcolumn", "no")
-    vim.api.nvim_win_set_buf(win, buf)
-    vim.fn.termopen(vim.o.shell, vim.empty_dict())
-    -- vim.keymap.set("n", "<ESC>", "<CMD>close<CR>", { buffer = buf })
-    vim.keymap.set("n", "q", "<CMD>close<CR>", { buffer = buf })
-    M.terminals[key] = { buf = buf, win = win }
-  end
-end
-
-M.split_horz = function(height, key)
-  height = height or 0.25
-  height = size(vim.o.lines, height)
-  split(height .. "split", key)
-end
-M.split_vert = function(width, key)
-  width = width or 0.3
-  width = size(vim.o.columns, width)
-  split(width .. "vsplit", key)
+  M.terminals[opts.key] = terminal
 end
 
 M.find_term = function(opts)
   local pickers = require("telescope.pickers")
   local finders = require("telescope.finders")
   local conf = require("telescope.config").values
-
   local actions = require("telescope.actions")
   local action_state = require("telescope.actions.state")
 
-  opts = opts or {}
+  local custom_action = function(buf, type)
+    return function()
+      actions.close(buf)
+      local selection = action_state.get_selected_entry()
+      vim.schedule(function() M.toggle({ type = type, key = selection.value[1] }) end)
+    end
+  end
 
+  opts = opts or {}
   local results = {}
   for k, v in pairs(M.terminals) do
-    local buf_name = vim.api.nvim_buf_get_name(v.buf)
-    table.insert(results, { k, k .. " " .. buf_name })
+    if vim.api.nvim_buf_is_valid(v.buf) then
+      table.insert(results, { k, k .. " " .. vim.api.nvim_buf_get_name(v.buf) })
+    end
   end
+
   pickers
     .new(opts, {
-      prompt_title = "M.terminals",
+      prompt_title = "Terminals",
       finder = finders.new_table({
         results = results,
         entry_maker = function(entry)
@@ -111,27 +109,9 @@ M.find_term = function(opts)
       }),
       sorter = conf.generic_sorter(opts),
       attach_mappings = function(prompt_bufnr, _) -- _ -> map
-        actions.select_default:replace(function()
-          actions.close(prompt_bufnr)
-          local selection = action_state.get_selected_entry()
-          vim.schedule(function()
-            M.float(nil, selection.value[1])
-          end)
-        end)
-        actions.select_horizontal:replace(function()
-          actions.close(prompt_bufnr)
-          local selection = action_state.get_selected_entry()
-          vim.schedule(function()
-            M.split_horz(nil, selection.value[1])
-          end)
-        end)
-        actions.select_vertical:replace(function()
-          actions.close(prompt_bufnr)
-          local selection = action_state.get_selected_entry()
-          vim.schedule(function()
-            M.split_vert(nil, selection.value[1])
-          end)
-        end)
+        actions.select_default:replace(custom_action(prompt_bufnr, "float"))
+        actions.select_horizontal:replace(custom_action(prompt_bufnr, "split"))
+        actions.select_vertical:replace(custom_action(prompt_bufnr, "vsplit"))
         actions.select_tab:replace(function() end)
         return true
       end,
