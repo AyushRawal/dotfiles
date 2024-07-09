@@ -37,11 +37,11 @@ M.blockwise_comment = function(mode)
       end
       return
     end
-    local l1, p1 = lines[1]:match("^%s*(" .. vim.pesc(left) .. ")(%s*).-" .. "%s*$")
-    local p2, l2 = lines[#lines]:match("^%s*" .. ".-(%s*)(" .. vim.pesc(right) .. ")%s*$")
+    local l1 = lines[1]:match("^%s*(" .. vim.pesc(left) .. "%s*).-" .. "%s*$")
+    local l2 = lines[#lines]:match("^%s*" .. ".-(%s*" .. vim.pesc(right) .. ")%s*$")
     if l1 and l2 then -- commented, uncomment
-      lines[1] = lines[1]:gsub(vim.pesc(left) .. p1, "", 1)
-      lines[#lines] = lines[#lines]:gsub(p2 .. vim.pesc(right) .. "(%s*)$", "%1", 1)
+      lines[1] = lines[1]:gsub(vim.pesc(l1), "", 1)
+      lines[#lines] = lines[#lines]:gsub(vim.pesc(l2) .. "(%s*)$", "%1", 1)
     else -- not commented, comment
       local pad, content = lines[1]:match("^(%s*)(.-)$")
       lines[1] = pad .. left .. " " .. content
@@ -71,16 +71,16 @@ M.setup = function(config)
     local line = vim.fn.getline(".")
     local pos = vim.api.nvim_win_get_cursor(0)
     pos[1] = pos[1] - 1
-    local patterns = {
-      ok and ts_context_commentstring.calculate_commentstring({ key = "__default", location = pos }),
-      ok and ts_context_commentstring.calculate_commentstring({ key = "__multiline", location = pos }),
+    local patterns = {}
+    vim.list_extend(patterns, {
+      ok and ts_context_commentstring.calculate_commentstring({ key = "__default", location = pos }) or nil,
+      ok and ts_context_commentstring.calculate_commentstring({ key = "__multiline", location = pos }) or nil,
       M._get_option(filetype, option),
-    }
+    })
     --> credits to `folke/ts-comments.nvim` for the code below <--
     local cs = nil
     local n = math.huge
     for _, pattern in ipairs(patterns) do
-      if not pattern then goto continue end
       local left, right = pattern:match("^%s*(.-)%s*%%s%s*(.-)%s*$")
       if left and right then
         local l, m, r = line:match("^%s*" .. vim.pesc(left) .. "(%s*)(.-)(%s*)" .. vim.pesc(right) .. "%s*$")
@@ -92,7 +92,6 @@ M.setup = function(config)
           cs = vim.trim(left .. " %s " .. right) -- add correct whitespace to comment
         end
       end
-      ::continue::
     end
     assert(cs, "commentstring should not be nil")
     return cs
