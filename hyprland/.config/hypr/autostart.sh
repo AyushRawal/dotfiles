@@ -17,6 +17,6 @@ wl-paste --watch cliphist store &
 swayidle \
   timeout 300 '$HOME/.local/bin/scripts/dim-screen.sh' resume 'killall dim-screen.sh' \
   timeout 600 'killall dim-screen.sh; pgrep -x swaylock || swaylock' \
-  timeout 900 'killall dim-screen.sh; systemctl suspend-then-hibernate' \
+  timeout 900 'killall dim-screen.sh; systemctl suspend' \
   lock 'killall dim-screen.sh; swaylock' \
   before-sleep 'killall dim-screen.sh; pgrep -x swaylock || swaylock' &
