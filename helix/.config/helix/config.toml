@@ -17,3 +17,11 @@ hidden = false
 
 [editor.indent-guides]
 render = true
+
+[editor.smart-tab]
+enable = false
+
+[editor.statusline]
+left = [ "mode", "spacer", "version-control", "spinner" ]
+center = [ "file-name", "read-only-indicator", "file-modification-indicator", "file-encoding" ]
+right = [ "diagnostics", "selections", "register", "position", "position-percentage", "file-line-ending", "file-type" ]

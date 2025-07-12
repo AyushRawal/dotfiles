@@ -15,6 +15,7 @@ common:
 	stow tmux
 	stow zathura
 	stow zsh
+	stow wireplumber
 others:
 	stow alacritty
 xorg:

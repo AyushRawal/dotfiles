@@ -1,4 +1,4 @@
-local mappings = require("user.mappings")
+local mappings = require("user.keymaps")
 return {
   {
     "kylechui/nvim-surround",
@@ -57,10 +57,7 @@ return {
       local function indent_set_hl()
         local indent_hl = vim.api.nvim_get_hl(0, { name = "IndentLine" })
         if vim.tbl_isempty(indent_hl) then indent_hl = vim.api.nvim_get_hl(0, { name = "IblIndent" }) end
-        if vim.tbl_isempty(indent_hl) then
-          print("hi")
-          indent_hl = vim.api.nvim_get_hl(0, { name = "Whitespace" })
-        end
+        if vim.tbl_isempty(indent_hl) then indent_hl = vim.api.nvim_get_hl(0, { name = "Whitespace" }) end
         indent_hl.nocombine = true
         vim.api.nvim_set_hl(0, "IndentLine", indent_hl)
 
@@ -105,7 +102,7 @@ return {
     keys = mappings.conform,
     event = { "BufReadPost", "BufNewFile" },
     opts = function()
-      local prettier = { { "prettierd", "prettier" } }
+      local prettier = { "prettierd", "prettier", stop_after_first = true }
       return {
         formatters_by_ft = {
           lua = { "stylua" },
@@ -114,7 +111,11 @@ return {
           typescript = prettier,
           javascriptreact = prettier,
           typescriptreact = prettier,
+          markdown = prettier,
           sh = { "shfmt" },
+          sql = { "sqlfmt" },
+          html = prettier,
+          css = prettier,
         },
       }
       -- vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
@@ -153,7 +154,7 @@ return {
     "epwalsh/obsidian.nvim",
     version = "*", -- recommended, use latest release instead of latest commit
     ft = "markdown",
-    keys = require("user.mappings").obsidian,
+    keys = require("user.keymaps").obsidian,
     cmd = {
       "ObsidianOpen",
       "ObsidianNew",
@@ -200,6 +201,13 @@ return {
     },
   },
   {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = "cd app && npm install && git restore .",
+    init = function() vim.g.mkdp_filetypes = { "markdown" } end,
+    ft = { "markdown" },
+  },
+  {
     "3rd/image.nvim",
     build = "luarocks --lua-version 5.1 --local install magick",
     event = {
@@ -235,6 +243,6 @@ return {
   {
     "jbyuki/nabla.nvim",
     ft = { "markdown", "markdown_inline", "latex", "tex" },
-    keys = require("user.mappings").nabla,
+    keys = require("user.keymaps").nabla,
   },
 }

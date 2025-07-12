@@ -1,0 +1,114 @@
+#!/bin/bash
+
+# --- Configuration Variables ---
+TITLE="Media Player"
+OUTPUT_DIR="html"
+FILES_PER_PAGE=50
+IMAGE_HEIGHT=600
+VIDEO_HEIGHT=600
+
+# --- Helper Function: Check if file is an image ---
+is_img() {
+    local filename="${1##*.}"
+    case "$filename" in
+        jpg|jpeg|png|gif|webp|tiff|bmp) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+# --- Main Program ---
+
+# Create the output directory if it doesn't exist
+mkdir -p "$OUTPUT_DIR"
+
+# Initialize counters
+file_index=0
+page_number=1
+
+# Find all supported media files, sort by modification date (descending)
+# Using find with -printf %T@ for epoch time, then sort numerically in reverse,
+# then cut the filename, and finally read them.
+find . -maxdepth 1 -type f \
+    \( -iname "*.mp4" -o -iname "*.mkv" -o -iname "*.webm" -o \
+       -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o \
+       -iname "*.webp" -o -iname "*.gif" -o -iname "*.tiff" -o \
+       -iname "*.bmp" \) \
+    -printf "%T@ %p\n" | sort -rn | cut -d' ' -f2- | while read -r file; do
+
+    # If it's the start of a new page, or the very first file
+    if (( file_index % FILES_PER_PAGE == 0 )); then
+        # Close the previous HTML file if it exists and isn't the first one
+        if (( file_index > 0 )); then
+            echo "<a href=\"$((page_number + 1)).html\">Next ></a>" >> "$OUTPUT_DIR/$page_number.html"
+            echo "</body>" >> "$OUTPUT_DIR/$page_number.html"
+            echo "</html>" >> "$OUTPUT_DIR/$page_number.html"
+        fi
+
+        # Increment page number for the new page
+        ((page_number++))
+
+        # Define the current output file
+        current_html_file="$OUTPUT_DIR/$page_number.html"
+        if (( page_number == 1 )); then
+            current_html_file="$OUTPUT_DIR/index.html" # First page is index.html
+        fi
+
+        echo "Creating $(basename "$current_html_file")"
+
+        # Start new HTML file
+        cat <<EOF > "$current_html_file"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>$TITLE - Page $page_number</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: sans-serif; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px; }
+        .media-container { text-align: center; border: 1px solid #ddd; padding: 10px; border-radius: 8px; background-color: #f9f9f9; }
+        img, video { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+        a { text-decoration: none; color: inherit; }
+        .navigation { width: 100%; text-align: center; margin-top: 20px; }
+        .navigation a { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; border-radius: 5px; text-decoration: none; }
+        .navigation a:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+EOF
+    fi
+
+    # Append media content to the current HTML file
+    relative_path="../${file#./}" # Path relative to the html/ directory
+
+    echo "<div class=\"media-container\">" >> "$current_html_file"
+    if is_img "$file"; then
+        echo "    <a href=\"$relative_path\"><img src=\"$relative_path\" height=\"$IMAGE_HEIGHT\" alt=\"$file\"></a>" >> "$current_html_file"
+    else
+        # For video, include controls for playback
+        echo "    <a href=\"$relative_path\"><video height=\"$VIDEO_HEIGHT\" controls><source src=\"$relative_path\" type=\"$(file --mime-type -b "$file")\">Your browser does not support the video tag.</video></a>" >> "$current_html_file"
+    fi
+    echo "    <p>$file</p>" >> "$current_html_file" # Display filename below the media
+    echo "</div>" >> "$current_html_file"
+
+
+    ((file_index++))
+done
+
+# Close the last HTML file
+if (( file_index > 0 )); then
+    # Add navigation for previous page if applicable
+    if (( page_number > 1 )); then
+        echo "<div class=\"navigation\">" >> "$current_html_file"
+        # Adjusted for the current page number in navigation
+        if (( page_number > 2 )); then # If there are more than 2 pages, link to the previous numbered page
+             echo "    <a href=\"$((page_number - 1)).html\">< Previous</a>" >> "$current_html_file"
+        elif (( page_number == 2 )); then # If it's the second page, link to index.html
+             echo "    <a href=\"index.html\">< Previous</a>" >> "$current_html_file"
+        fi
+        echo "</div>" >> "$current_html_file"
+    fi
+    echo "</body>" >> "$current_html_file"
+    echo "</html>" >> "$current_html_file"
+fi
+
+echo "HTML generation complete. Check the '$OUTPUT_DIR' directory."

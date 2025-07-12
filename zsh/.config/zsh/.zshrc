@@ -56,4 +56,6 @@ _is_cmd mise && eval "$(mise activate zsh)"
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 _ysource ~/.config/zsh/.p10k.zsh
-_ysource ~/.config/zsh/.p10k.rtx.zsh
+
+# bun completions
+[ -s "/home/rawal/.bun/_bun" ] && source "/home/rawal/.bun/_bun"

@@ -1,50 +1,48 @@
 return {
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    opts = {
-      disable_filetype = { "TelescopePrompt", "lisp", "scheme" },
-      disable_in_visualblock = true,
-      fast_wrap = {}, -- <A-e> to use fast wrap
-    },
-    config = function(_, npairs_opts)
-      local npairs = require("nvim-autopairs")
-      local rule = require("nvim-autopairs.rule")
-      local cond = require("nvim-autopairs.conds")
-      npairs.setup(npairs_opts)
+  "windwp/nvim-autopairs",
+  event = "InsertEnter",
+  opts = {
+    disable_filetype = { "TelescopePrompt", "lisp", "scheme", "snacks_picker_input", "snacks_picker_list" },
+    disable_in_visualblock = true,
+    fast_wrap = {},   -- <A-e> to use fast wrap
+  },
+  config = function(_, npairs_opts)
+    local npairs = require("nvim-autopairs")
+    local rule = require("nvim-autopairs.rule")
+    local cond = require("nvim-autopairs.conds")
+    npairs.setup(npairs_opts)
 
-      npairs.add_rule(rule("$", "$", { "tex", "latex", "markdown", "markdown_inline" }))
+    npairs.add_rule(rule("$", "$", { "tex", "latex", "markdown", "markdown_inline" }))
 
-      local function add_in_pair_for_pair(a1, ins, a2, lang)
-        local r = rule(ins, ins, lang)
+    local function add_in_pair_for_pair(a1, ins, a2, lang)
+      local r = rule(ins, ins, lang)
           :with_pair(function(opts) return a1 .. a2 == opts.line:sub(opts.col - #a1, opts.col + #a2 - 1) end)
           :with_move(cond.none())
           :with_cr(cond.none())
           :with_del(function(opts)
             local col = vim.api.nvim_win_get_cursor(0)[2]
-            return a1 .. ins .. ins .. a2 == opts.line:sub(col - #a1 - #ins + 1, col + #ins + #a2) -- insert only works for #ins == 1 anyway
+            return a1 .. ins .. ins .. a2 ==
+                opts.line:sub(col - #a1 - #ins + 1, col + #ins + #a2) -- insert only works for #ins == 1 anyway
           end)
-        npairs.add_rule(r)
-        return r
-      end
-      add_in_pair_for_pair("(", " ", ")")
-      add_in_pair_for_pair("{", " ", "}")
-      add_in_pair_for_pair("[", " ", "]").not_filetypes = { "markdown", "markdown_inline" }
-      -- add_in_pair_for_pair("(", "*", ")", "ocaml")
-      -- add_in_pair_for_pair("(*", " ", "*)", "ocaml")
+      npairs.add_rule(r)
+      return r
+    end
+    add_in_pair_for_pair("(", " ", ")")
+    add_in_pair_for_pair("{", " ", "}")
+    add_in_pair_for_pair("[", " ", "]").not_filetypes = { "markdown", "markdown_inline" }
+    -- add_in_pair_for_pair("(", "*", ")", "ocaml")
+    -- add_in_pair_for_pair("(*", " ", "*)", "ocaml")
 
-      -- move past punctuation
-      for _, punct in pairs({ ",", ";" }) do
-        npairs.add_rules({
-          rule("", punct)
+    -- move past punctuation
+    for _, punct in pairs({ ",", ";" }) do
+      npairs.add_rules({
+        rule("", punct)
             :with_move(function(opts) return opts.char == punct end)
             :with_pair(function() return false end)
             :with_del(function() return false end)
             :with_cr(function() return false end)
             :use_key(punct),
-        })
-      end
-    end,
-  },
-  -- { "gpanders/nvim-parinfer", ft = { "lisp", "scheme" } }, -- purpose built autopairing for lisp family of languages
+      })
+    end
+  end,
 }

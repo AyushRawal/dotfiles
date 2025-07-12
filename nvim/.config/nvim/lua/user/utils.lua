@@ -42,13 +42,13 @@ M.kind_icons = {
 }
 
 M.diagnostics_icons = {
-  Error = "",
-  Warn = "",
-  Hint = "",
-  Info = "",
+  Error = " ",
+  Warn = " ",
+  Hint = " ",
+  Info = " ",
 }
 
----@param on_attach fun(client: vim.lsp.Client, bufnr: buffer)
+---@param on_attach fun(client: vim.lsp.Client, bufnr: integer)
 M.on_lsp_attach = function(on_attach)
   vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)

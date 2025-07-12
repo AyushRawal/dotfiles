@@ -53,7 +53,7 @@ else
 fi
 
 alias vi="nvim"
-alias hx="helix"
+# alias hx="helix"
 
 if _is_cmd bat; then
   alias cat="bat"
@@ -88,3 +88,11 @@ alias ts="eztmux session"
 alias nb="eztmux dir ~/Notes"
 
 alias gs="git status"
+
+alias lg="lazygit"
+
+alias nwi="NVIM_APPNAME='nwim' nvim"
+
+refresh-copilot-token() {
+  export OPENAI_API_KEY=$(curl -s -H "Authorization: Bearer $(cat ~/.config/github-copilot/apps.json | jq -r 'to_entries[0].value.oauth_token')" "https://api.github.com/copilot_internal/v2/token" | jq -r '.token')
+}

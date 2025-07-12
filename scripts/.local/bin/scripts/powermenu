@@ -14,14 +14,15 @@ dir="$HOME/.config/rofi/themes/"
 theme='powermenu'
 
 # CMDs
-uptime="`uptime -p | sed -e 's/up //g'`"
-host=`whoami`
+uptime=$(uptime -p | sed -e 's/up //g')
+host=$(whoami)
 
 # Options
 shutdown=" Shutdown"
 reboot=" Reboot"
 lock=" Lock"
 suspend="⏾ Suspend"
+hibernate="󰒲 Hibernate"
 logout=" Logout"
 yes=' Yes'
 no=' No'
@@ -31,7 +32,7 @@ rofi_cmd() {
   rofi -dmenu \
     -p "$host" \
     -mesg "Uptime: $uptime" \
-    -theme ${dir}/${theme}.rasi
+    -theme "${dir}"/${theme}.rasi
   }
 
 # Confirmation CMD
@@ -44,7 +45,7 @@ confirm_cmd() {
     -dmenu \
     -p 'Confirmation' \
     -mesg 'Are you Sure?' \
-    -theme ${dir}/${theme}.rasi
+    -theme "${dir}"/${theme}.rasi
   }
 
 # Ask for confirmation
@@ -54,7 +55,7 @@ confirm_exit() {
 
 # Pass variables to rofi dmenu
 run_rofi() {
-  echo -e "$lock\n$suspend\n$logout\n$reboot\n$shutdown" | rofi_cmd
+  echo -e "$lock\n$suspend\n$hibernate\n$logout\n$reboot\n$shutdown" | rofi_cmd
 }
 
 # Execute Command
@@ -66,7 +67,9 @@ run_cmd() {
     elif [[ $1 == '--reboot' ]]; then
       systemctl reboot
     elif [[ $1 == '--suspend' ]]; then
-      systemctl suspend-then-hibernate
+      systemctl suspend
+    elif [[ $1 == '--hibernate' ]]; then
+      systemctl hibernate
     elif [[ $1 == '--logout' ]]; then
       # qtile cmd-obj -o cmd -f shutdown
       hyprctl dispatch exit
@@ -93,6 +96,9 @@ case ${chosen} in
     ;;
   $suspend)
     run_cmd --suspend
+    ;;
+  $hibernate)
+    run_cmd --hibernate
     ;;
   $logout)
     run_cmd --logout

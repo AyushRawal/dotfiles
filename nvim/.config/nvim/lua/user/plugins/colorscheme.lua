@@ -1,6 +1,9 @@
 local gruvbox_custom = function()
   local highlights = {
+    NvimSurroundHighlight = "@text.warning",
     -- lsp and floats
+    Pmenu = "Normal",
+    PmenuKind = "DiagnosticSignWarn",
     NormalFloat = "Normal",
     FloatBorder = "Normal",
     ErrorFloat = "DiagnosticSignError",
@@ -8,6 +11,7 @@ local gruvbox_custom = function()
     HintFloat = "DiagnosticSignHint",
     InfoFloat = "DiagnosticSignFloat",
     DiagnosticSignOk = "AquaSign",
+    -- AvanteSidebarWinSeparator = "Grey",
   }
   for from, to in pairs(highlights) do
     vim.api.nvim_set_hl(0, from, { link = to })

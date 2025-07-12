@@ -1,18 +1,29 @@
 local M = {}
 
 local function map(mode, lhs, rhs, opts)
-  opts = vim.tbl_extend("force", opts or {}, { noremap = true, silent = true })
+  opts = vim.tbl_extend("force", { noremap = true, silent = true }, opts or {})
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 
+-- M.wk = {
+--   d = { name = "diagnostics" },
+--   l = { name = "lsp", w = { "workspace" } },
+--   t = { name = "terminal" },
+--   f = { name = "find" },
+--   b = { name = "buffers" },
+--   g = { name = "git", t = { "toggle" } },
+--   n = { name = "notes" },
+-- }
 M.wk = {
-  d = { name = "diagnostics" },
-  l = { name = "lsp", w = { "workspace" } },
-  t = { name = "terminal" },
-  f = { name = "find" },
-  b = { name = "buffers" },
-  g = { name = "git", t = { "toggle" } },
-  n = { name = "notes" },
+  { "<leader>d", group = "diagnostics" },
+  { "<leader>l", group = "lsp" },
+  { "<leader>lw", group = "workspace" },
+  { "<leader>t", group = "terminal" },
+  { "<leader>f", group = "find" },
+  { "<leader>b", group = "buffers" },
+  { "<leader>g", group = "git" },
+  { "<leader>gt", group = "toggle" },
+  { "<leader>n", group = "notes" },
 }
 
 M.main = function()
@@ -45,7 +56,9 @@ M.main = function()
   map("x", ">", ">gv")
 
   -- better yanking
+  map("n", "<A-y>", "<CMD>%y+<CR>", { desc = "copy whole buffer" })
   map({ "n", "x" }, "<leader>y", '"+y', { desc = "copy to system clipboard" })
+  map("n", "<leader>Y", '"+y$', { desc = "copy till end of line to system clipboard" })
   map({ "n", "x" }, "<leader>p", '"+p', { desc = "paste (after) from system clipboard" })
   map({ "n", "x" }, "<leader>P", '"+P', { desc = "paste (before) from system clipboard" })
   map("n", "x", '"_x') --> do not send deleted char to clipboard
@@ -61,11 +74,11 @@ M.main = function()
   map("n", "<A-l>", "<CMD>lclose<CR>", { desc = "close location list" })
 
   -- save me
-  map("n", "<CR>", function()
-    if vim.o.modifiable then return "ciw" end --> change word under cursor normally
-    if vim.o.buftype == "help" then return "<C-]>" end --> follow tags in help windows
-    return "<CR>" --> keep enter in other non-modifiable windows such as quickfix etc.
-  end, { desc = "ciw / follow help tags / default", expr = true })
+  -- map("n", "<CR>", function()
+  --   if vim.o.modifiable then return "ciw" end --> change word under cursor normally
+  --   if vim.o.buftype == "help" then return "<C-]>" end --> follow tags in help windows
+  --   return "<CR>" --> keep enter in other non-modifiable windows such as quickfix etc.
+  -- end, { desc = "ciw / follow help tags / default", expr = true })
 
   map("n", "<leader>w", "<CMD>w<CR>", { desc = "save file" })
 
@@ -147,7 +160,6 @@ M.comment = {
 -- competitive programming setup
 M.cp = function()
   map("n", "<A-p>", "<CMD>!wl-paste > input.txt<CR>")
-  map("n", "<A-y>", "<CMD>%y+<CR>")
   map("n", "<F5>", "<CMD>!runcpp %<CR>")
   map("n", "<A-n>", function()
     vim.ui.input({ prompt = "Name: " }, function(input)
@@ -197,7 +209,7 @@ M.cmp = function()
     ["<C-Space>"] = cmp.mapping.complete(),
     ["<C-e>"] = cmp.mapping.abort(),
     -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-    ["<CR>"] = cmp.mapping.confirm({ select = false }),
+    -- ["<CR>"] = cmp.mapping.confirm({ select = false }),
     ["<C-y>"] = cmp.mapping.confirm({ select = true }),
   }
 end

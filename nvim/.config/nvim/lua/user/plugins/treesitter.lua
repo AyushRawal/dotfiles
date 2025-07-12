@@ -1,4 +1,4 @@
-local mappings = require("user.mappings")
+local mappings = require("user.keymaps")
 
 return {
   {
@@ -37,6 +37,9 @@ return {
     },
     opts = {
       auto_install = true,
+      -- TODO: this is not working
+      -- ensure_installed = { "markdown", "markdown_inline", "regex", "vim", "vimdoc", "diff", "lua", "luadoc", "luap", "query" },
+      -- sync_install = true,
       highlight = {
         enable = true,
         additional_vim_regex_highlighting = false,
@@ -57,7 +60,6 @@ return {
 
           -- Automatically jump forward to textobj, similar to targets.vim
           lookahead = true,
-
           keymaps = mappings.treesitter.textobjects.select,
           -- You can choose the select mode (default is charwise 'v')
           --
@@ -90,8 +92,8 @@ return {
     },
     config = function(_, opts)
       require("nvim-treesitter.configs").setup(opts)
-      vim.opt.foldmethod = "expr" -- folding, set to "expr" for treesitter based folding
-      vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- set to "nvim_treesitter#foldexpr()" for treesitter based folding
+      -- vim.opt.foldmethod = "expr" -- folding, set to "expr" for treesitter based folding
+      -- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- set to "nvim_treesitter#foldexpr()" for treesitter based folding
     end,
   },
   {
@@ -103,13 +105,6 @@ return {
     config = function(_, opts)
       vim.g.skip_ts_context_commentstring_module = true
       require("ts_context_commentstring").setup(opts)
-    end,
-  },
-  {
-    "numToStr/Comment.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook()
     end,
   },
 }

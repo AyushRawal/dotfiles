@@ -9,9 +9,11 @@ settings:
   backend:
     global: webengine
   colors.webpage.darkmode.algorithm:
-    global: lightness-cielab
+    global: lightness-hsl
   colors.webpage.darkmode.enabled:
-    global: true
+    global: false
+  colors.webpage.darkmode.policy.images:
+    global: smart-simple
   colors.webpage.preferred_color_scheme:
     global: dark
   fonts.default_size:
@@ -21,6 +23,23 @@ settings:
   fonts.web.size.default:
     global: 16
   fonts.web.size.default_fixed:
-    global: 20
+    global: 13
   qt.highdpi:
     global: false
+  tabs.padding:
+    global:
+      bottom: 3
+      left: 5
+      right: 5
+      top: 3
+  tabs.position:
+    global: left
+  tabs.show:
+    global: switching
+  url.default_page:
+    global: ~/.dotfiles/startpage/index.html
+  url.searchengines:
+    global:
+      DEFAULT: https://duckduckgo.com/?q={}
+  url.start_pages:
+    global: ~/.dotfiles/startpage/index.html

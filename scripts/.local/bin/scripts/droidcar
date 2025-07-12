@@ -1,16 +1,41 @@
 #!/usr/bin/env bash
 
-IP="192.168.1.10"
+pos=-1112
+if [[ $1 == "right" ]] || [[ $2 == "right" ]]; then
+  pos=2000
+fi
+
+wifi_interface="wlp0s20f3"
+usb_interface=$(ip link show | grep enp0s20f0u | awk -F': ' '{print $2}')
+lan_interface="net0"
+
+# prefer local and wired
+[[ -n "$usb_interface" ]] && IP=$(ip -4 addr show dev "$usb_interface" 2>&1 | grep inet | awk '{print $2}' | cut -d/ -f1 | grep 192)
+[[ -n "$lan_interface" ]] && [[ -z "$IP" ]] && IP=$(ip -4 addr show dev "$lan_interface" 2>&1 | grep inet | awk '{print $2}' | cut -d/ -f1 | grep 192)
+[[ -z "$IP" ]] && IP=$(ip -4 addr show dev $wifi_interface 2>&1 | grep inet | awk '{print $2}' | cut -d/ -f1 | grep 192)
+[[ -n "$usb_interface" ]] && [[ -z "$IP" ]] && IP=$(ip -4 addr show dev "$usb_interface" 2>&1 | grep inet | awk '{print $2}' | cut -d/ -f1)
+[[ -n "$lan_interface" ]] && [[ -z "$IP" ]] && IP=$(ip -4 addr show dev "$lan_interface" 2>&1 | grep inet | awk '{print $2}' | cut -d/ -f1)
+[[ -z "$IP" ]] && IP=$(ip -4 addr show dev $wifi_interface 2>&1 | grep inet | awk '{print $2}' | cut -d/ -f1)
+
+if [[ -z "$IP" ]]; then
+  echo "No connected network found. Exiting.."
+  exit 0
+fi
+echo "IP: $IP"
 
 name=$(hyprctl monitors | grep -o -m 1 "HEADLESS-[0-9]\+")
 while [[ -n "$name" ]]; do
   hyprctl output remove "$name"
   name=$(hyprctl monitors | grep -o -m 1 "HEADLESS-[0-9]\+")
-done
+done > /dev/null
 
-hyprctl output create headless
+hyprctl output create headless > /dev/null
 name=$(hyprctl monitors | grep -o "HEADLESS-[0-9]\+")
 [[ -z "$name" ]] && exit 1
-hyprctl keyword monitor "$name",2224x1080,-1112x0,2
+if [[ $1 == "lowres" ]] || [[ $2 == "lowres" ]]; then
+  hyprctl keyword monitor "$name",1112x540,"$pos"x1,1 > /dev/null # low-res
+else
+  hyprctl keyword monitor "$name",2224x1080,"$pos"x1,2 > /dev/null
+fi
 wayvnc -d -o "$name" "$IP"
-hyprctl output remove "$name"
+hyprctl output remove "$name" > /dev/null

@@ -1,2 +1,1 @@
-vim.opt_local.conceallevel = 1
-vim.opt_local.wrap = true
+/home/rawal/.config/nvim/after/ftplugin/markdown.lua

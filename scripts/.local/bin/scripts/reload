@@ -24,11 +24,18 @@ reload_dunst() {
     setsid dunst &
 }
 
+reload_waybar() {
+    pkill waybar
+    sleep 1
+    setsid waybar &
+}
+
 if [ $# -eq 0 ]; then
     # reload_sxhkd
-    reload_qtile
-    reload_polybar
-    reload_monitor
+    # reload_qtile
+    # reload_polybar
+    # reload_monitor
+    reload_waybar
 else
     for var in "$@"
     do
@@ -47,6 +54,9 @@ else
             ;;
         "dunst")
             reload_dunst
+            ;;
+        "waybar")
+            reload_waybar
             ;;
         *)
             echo "Invalid argument: $var"

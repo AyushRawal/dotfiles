@@ -50,8 +50,9 @@ _is_cmd() {
 ycmp() {
   _is_cmd gh && gh completion -s zsh > $ZDOTDIR/completions/_gh
   _is_cmd pip && pip completion --zsh | sed '/# .*/d;/^\s*$/d' > $ZDOTDIR/completions/_pip
-  _is_cmd fnm && fnm completions --shell zsh > $ZDOTDIR/completions/_fnm
-  _is_cmd rtx && rtx completion zsh > $ZDOTDIR/completions/_rtx
+  # _is_cmd fnm && fnm completions --shell zsh > $ZDOTDIR/completions/_fnm
+  # _is_cmd rtx && rtx completion zsh > $ZDOTDIR/completions/_rtx
+  _is_cmd mise && mise completion zsh > $ZDOTDIR/completions/_mise
 }
 
 _yomz() {

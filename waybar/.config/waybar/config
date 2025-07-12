@@ -81,7 +81,7 @@
         "format-icons": ["", "", "", "", ""]
     },
     "network": {
-        "format": "{bandwidthDownBytes}  : {bandwidthUpBytes} ",
+        "format": "{bandwidthUpBytes}  : {bandwidthDownBytes} ",
         "tooltip-format": "{ifname} via {gwaddr}",
         "tooltip-format-wifi": "{essid}: {signalStrength}%  ",
         "format-linked": "{ifname} (No IP)",

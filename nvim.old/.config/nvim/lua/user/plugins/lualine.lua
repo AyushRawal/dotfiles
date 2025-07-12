@@ -148,6 +148,10 @@ return {
       },
       lualine_x = {
         {
+          'copilot',
+          -- cond = function() return package.loaded["copilot-lualine"] and package.loaded["copilot"] end,
+        },
+        {
           function()
             if not package.loaded["lint"] then return "" end
             local linters = require("lint").linters_by_ft[vim.bo.filetype]

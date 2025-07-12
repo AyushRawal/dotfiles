@@ -1,6 +1,6 @@
 return {
   "nvim-telescope/telescope.nvim",
-  version = "0.1.x",
+  -- version = "0.1.x",
   dependencies = {
     "nvim-lua/plenary.nvim",
     {
@@ -19,7 +19,7 @@ return {
       ),
     },
   },
-  keys = require("user.mappings").telescope,
+  keys = require("user.keymaps").telescope,
   cmd = "Telescope",
   config = function()
     local vimgrep_arguments = { unpack(require("telescope.config").values.vimgrep_arguments) }
@@ -50,7 +50,7 @@ return {
         multi_icon = "+ ",
         -- results_title = false,
         -- border = false,
-        borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+        -- borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
         -- borderchars = {
         --   prompt = { "─", "│", "─", "│", '┌', '┐', "┤", "├" },
         --   results = { " ", "│", "─", "│", "│", "│", "┘", "└" },

@@ -1,4 +1,4 @@
-local mappings = require("user.mappings")
+local mappings = require("user.keymaps")
 
 return {
   "numToStr/Comment.nvim",

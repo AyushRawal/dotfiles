@@ -1,4 +1,4 @@
-local mappings = require("user.mappings")
+local mappings = require("user.keymaps")
 local cmp_set_hl = function() vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true }) end
 return {
   {
@@ -51,6 +51,11 @@ return {
             return vim_item
           end,
         },
+        experimental = {
+          ghost_text = {
+            hl_group = "CmpGhostText",
+          },
+        },
       }
     end,
     config = function(_, opts)
@@ -91,6 +96,7 @@ return {
   {
     "L3MON4D3/LuaSnip",
     event = "InsertEnter",
+    build = "make install_jsregexp",
     dependencies = {
       "rafamadriz/friendly-snippets",
       config = function() require("luasnip.loaders.from_vscode").lazy_load() end,
